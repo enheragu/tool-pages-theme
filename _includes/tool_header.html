@@ -1,0 +1,12 @@
+<header>
+  <div class="header-inner">
+    <div>
+      <h1 class="shared-page-title"{% if include.title_id %} id="{{ include.title_id }}"{% endif %}{% if include.title_i18n_key %} data-i18n="{{ include.title_i18n_key }}"{% endif %}>{{ include.title }}</h1>
+      <p class="subtitle"{% if include.subtitle_id %} id="{{ include.subtitle_id }}"{% endif %}{% if include.subtitle_i18n_key %} data-i18n="{{ include.subtitle_i18n_key }}"{% endif %}>{{ include.subtitle }}</p>
+    </div>
+    <div class="header-controls">
+      <div data-theme-toggle-host></div>
+      <div data-lang-switcher-host></div>
+    </div>
+  </div>
+</header>

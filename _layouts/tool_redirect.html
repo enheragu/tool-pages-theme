@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: page.page_lang | default: 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {% assign redirect_kind = page.redirect_kind | default: 'section' %}
+
+  {% if redirect_kind == 'lang' %}
+    {% assign page_lang = page.lang | default: 'en' %}
+    {% assign tool_name = page.tool_name | default: page.site_name | default: 'Tool' %}
+    {% assign base_url_raw = page.base_url | default: page.tool_root_url | default: '/' %}
+    {% assign base_path_raw = page.base_path | default: '/' %}
+
+    {% assign base_url_last = base_url_raw | slice: -1, 1 %}
+    {% if base_url_last == '/' %}
+      {% assign base_url = base_url_raw %}
+    {% else %}
+      {% assign base_url = base_url_raw | append: '/' %}
+    {% endif %}
+
+    {% assign base_path_last = base_path_raw | slice: -1, 1 %}
+    {% if base_path_last == '/' %}
+      {% assign base_path = base_path_raw %}
+    {% else %}
+      {% assign base_path = base_path_raw | append: '/' %}
+    {% endif %}
+
+    {% if page_lang == 'es' %}
+      {% assign lang_label = page.lang_label | default: 'Espanol' %}
+      {% assign default_description = 'Pagina de acceso en espanol para ' | append: tool_name | append: '.' %}
+      {% assign default_summary = 'Redireccionando a la herramienta en espanol.' %}
+      {% assign default_link_label = 'Abrir la herramienta en espanol' %}
+      {% assign default_og_locale = 'es_ES' %}
+    {% else %}
+      {% assign lang_label = page.lang_label | default: 'English' %}
+      {% assign default_description = 'English landing page for ' | append: tool_name | append: '.' %}
+      {% assign default_summary = 'Redirecting to the English tool.' %}
+      {% assign default_link_label = 'Open the English tool' %}
+      {% assign default_og_locale = 'en_GB' %}
+    {% endif %}
+
+    {% assign page_url = page.page_url | default: base_url | append: page_lang | append: '/' %}
+    {% assign x_default_url = page.x_default_url | default: base_url %}
+    {% assign en_url = page.en_url | default: base_url | append: 'en/' %}
+    {% assign es_url = page.es_url | default: base_url | append: 'es/' %}
+    {% assign tool_root_url = page.tool_root_url | default: base_url %}
+    {% assign title = page.redirect_title | default: tool_name | append: ' (' | append: lang_label | append: ')' %}
+    {% assign description = page.description | default: default_description %}
+    {% assign og_locale = page.og_locale | default: default_og_locale %}
+    {% assign og_title = page.og_title | default: title %}
+    {% assign og_description = page.og_description | default: description %}
+    {% assign twitter_title = page.twitter_title | default: og_title %}
+    {% assign twitter_description = page.twitter_description | default: og_description %}
+    {% assign og_image = page.og_image | default: base_url | append: 'assets/og-image.png' %}
+    {% assign icon_href = page.icon_href | default: base_path | append: 'assets/favicon.svg' %}
+    {% assign redirect_target = page.redirect_target | default: base_path | append: '?lang=' | append: page_lang %}
+    {% assign heading = page.heading | default: title %}
+    {% assign summary = page.summary | default: default_summary %}
+    {% assign link_label = page.link_label | default: default_link_label %}
+    {% assign site_name = page.site_name | default: tool_name %}
+    {% assign structured_description = page.structured_description | default: description %}
+
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ description }}">
+    <meta name="robots" content="index,follow">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ site_name }}">
+    <meta property="og:url" content="{{ page_url }}">
+    <meta property="og:locale" content="{{ og_locale }}">
+    <meta property="og:title" content="{{ og_title }}">
+    <meta property="og:description" content="{{ og_description }}">
+    <meta property="og:image" content="{{ og_image }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ twitter_title }}">
+    <meta name="twitter:description" content="{{ twitter_description }}">
+    <meta name="twitter:image" content="{{ og_image }}">
+    <link rel="canonical" href="{{ page_url }}">
+    <link rel="icon" type="image/svg+xml" href="{{ icon_href }}">
+    <link rel="alternate" hreflang="x-default" href="{{ x_default_url }}">
+    <link rel="alternate" hreflang="en" href="{{ en_url }}">
+    <link rel="alternate" hreflang="es" href="{{ es_url }}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": {{ og_title | jsonify }},
+      "url": {{ page_url | jsonify }},
+      "inLanguage": {{ page_lang | jsonify }},
+      "description": {{ structured_description | jsonify }},
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": {{ tool_name | jsonify }},
+        "url": {{ tool_root_url | jsonify }}
+      }
+    }
+    </script>
+    <meta http-equiv="refresh" content="3;url={{ redirect_target }}">
+    <script>
+      window.setTimeout(function () {
+        window.location.replace('{{ redirect_target }}');
+      }, 1200);
+    </script>
+  {% else %}
+    {% assign section = page.section | default: '' %}
+    {% assign base_path = page.base_path | default: '/stat-tools/' %}
+    {% assign base_url = page.base_url | default: 'https://enheragu.github.io/stat-tools/' %}
+    {% assign page_title = page.redirect_title | default: 'Redirecting...' %}
+    {% assign page_lang = page.lang | default: 'en' %}
+
+    {% assign target = base_path %}
+    {% if section != '' %}
+      {% assign target = target | append: '?section=' | append: section %}
+    {% endif %}
+
+    <title>{{ page_title }}</title>
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="{{ base_url }}?section={{ section }}">
+    <meta http-equiv="refresh" content="0;url={{ target }}">
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search || '');
+        var lang = (params.get('lang') || '').toLowerCase();
+        var target = '{{ target }}';
+        if (lang === 'en' || lang === 'es') {
+          target += (target.indexOf('?') === -1 ? '?' : '&') + 'lang=' + encodeURIComponent(lang);
+        }
+        window.location.replace(target);
+      })();
+    </script>
+  {% endif %}
+</head>
+<body>
+  {% if redirect_kind == 'lang' %}
+  <main>
+    <h1>{{ heading }}</h1>
+    <p>{{ summary }}</p>
+    <p><a href="{{ redirect_target }}">{{ link_label }}</a></p>
+  </main>
+  {% endif %}
+</body>
+</html>

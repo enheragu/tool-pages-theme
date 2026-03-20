@@ -1,0 +1,21 @@
+{% assign shared_base = site.shared_assets_base | default: '/assets/shared' %}
+{% if include.project == 'harris' %}
+<link rel="stylesheet" href="{{ shared_base }}/theme-tokens.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/theme-tokens.css';">
+<link rel="stylesheet" href="{{ shared_base }}/app-shell.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/app-shell.css';">
+<link rel="stylesheet" href="{{ shared_base }}/controls.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/controls.css';">
+<link rel="stylesheet" href="{{ shared_base }}/modal-primitives.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/modal-primitives.css';">
+<link rel="stylesheet" href="{{ shared_base }}/lightbox-stage.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/lightbox-stage.css';">
+<link rel="stylesheet" href="{{ shared_base }}/form-controls.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/form-controls.css';">
+{% else %}
+<link rel="stylesheet" href="{{ shared_base }}/theme-tokens.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/theme-tokens.css';">
+<link rel="stylesheet" href="{{ shared_base }}/app-shell.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/app-shell.css';">
+<link rel="stylesheet" href="{{ shared_base }}/modal-primitives.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/modal-primitives.css';">
+<link rel="stylesheet" href="{{ shared_base }}/publication-ui.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/publication-ui.css';">
+<link rel="stylesheet" href="{{ shared_base }}/form-controls.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/form-controls.css';">
+<link rel="stylesheet" href="{{ shared_base }}/controls.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/controls.css';">
+<link rel="stylesheet" href="{{ shared_base }}/analysis-panels.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/analysis-panels.css';">
+<link rel="stylesheet" href="{{ shared_base }}/tools-nav.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/tools-nav.css';">
+{% if include.with_checkbox_list %}
+<link rel="stylesheet" href="{{ shared_base }}/checkbox-list.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/checkbox-list.css';">
+{% endif %}
+{% endif %}

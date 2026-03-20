@@ -1,0 +1,154 @@
+.stepper {
+  display: grid;
+  grid-template-columns: 34px 1fr 34px;
+  border: 1px solid var(--clr-border);
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--clr-surface);
+}
+
+.stepper .btn-stepper {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  min-height: 34px;
+  border-right: 1px solid var(--clr-border);
+  font-size: var(--txt-base-plus);
+  background: transparent;
+  color: var(--txt-primary);
+  cursor: pointer;
+}
+
+.stepper .btn-stepper:last-child {
+  border-right: none;
+  border-left: 1px solid var(--clr-border);
+}
+
+.stepper input {
+  border: none;
+  border-radius: 0;
+  text-align: center;
+  padding: .35rem .45rem;
+  width: 100%;
+  box-shadow: none;
+}
+
+.stepper input[type='number']::-webkit-outer-spin-button,
+.stepper input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.stepper input[type='number'] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.stepper input:focus {
+  outline: none;
+}
+
+.shared-range-control,
+.range-control,
+.slider-control {
+  --range-track-bg: color-mix(in oklab, var(--clr-border) 76%, var(--clr-surface));
+  --range-track-border: color-mix(in oklab, var(--clr-border) 82%, transparent);
+  --range-thumb-bg: var(--clr-primary);
+  --range-thumb-border: color-mix(in oklab, var(--clr-primary) 65%, var(--clr-border));
+  --range-focus-outline: color-mix(in oklab, var(--clr-primary) 62%, transparent);
+  --range-value-color: var(--clr-text);
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.range-skin-vivid .shared-range-control,
+.range-skin-vivid .range-control,
+.slider-skin-vivid .slider-control {
+  --range-track-bg: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--clr-data-blue, #58a6ff) 22%, var(--clr-surface)) 0%,
+    color-mix(in oklab, var(--clr-data-blue, #58a6ff) 48%, var(--clr-surface)) 52%,
+    color-mix(in oklab, var(--clr-primary) 55%, var(--clr-data-blue, #58a6ff)) 100%
+  );
+  --range-track-border: color-mix(in oklab, var(--clr-data-blue, #58a6ff) 45%, var(--clr-border));
+  --range-thumb-bg: color-mix(in oklab, var(--clr-primary) 78%, white);
+  --range-thumb-border: color-mix(in oklab, var(--clr-data-blue, #58a6ff) 66%, var(--clr-border));
+  --range-focus-outline: color-mix(in oklab, var(--clr-data-blue, #58a6ff) 58%, transparent);
+  --range-value-color: color-mix(in oklab, var(--clr-data-blue, #58a6ff) 52%, var(--clr-text));
+}
+
+.shared-range-label-row,
+.slider-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--txt-sm-plus, .82rem);
+  color: var(--clr-muted);
+}
+
+.shared-range-value,
+.slider-value {
+  min-width: 3ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--range-value-color);
+  font-size: var(--txt-sm-plus, .82rem);
+}
+
+.shared-range-control input[type='range'],
+.slider-control input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--range-track-bg);
+  border: 1px solid var(--range-track-border);
+  outline: none;
+}
+
+.shared-range-control input[type='range']::-webkit-slider-thumb,
+.slider-control input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--range-thumb-border);
+  background: var(--range-thumb-bg);
+  box-shadow: var(--shadow-soft-card);
+  cursor: pointer;
+}
+
+.shared-range-control input[type='range']::-moz-range-thumb,
+.slider-control input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--range-thumb-border);
+  background: var(--range-thumb-bg);
+  box-shadow: var(--shadow-soft-card);
+  cursor: pointer;
+}
+
+.shared-range-control input[type='range']:focus-visible,
+.slider-control input[type='range']:focus-visible {
+  outline: 2px solid var(--range-focus-outline);
+  outline-offset: 3px;
+}
+
+.shared-range-control input[type='range']:disabled,
+.slider-control input[type='range']:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.range-skin-vivid .shared-range-control input[type='range']:disabled,
+.range-skin-vivid .range-control input[type='range']:disabled,
+.slider-skin-vivid .slider-control input[type='range']:disabled {
+  opacity: .7;
+  filter: saturate(.58) brightness(.9);
+}

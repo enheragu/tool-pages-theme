@@ -1,0 +1,12 @@
+{% assign analytics_enabled = include.enabled | default: false %}
+{% assign measurement_id = include.measurement_id | default: '' %}
+
+{% if analytics_enabled and measurement_id != '' %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ measurement_id }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ measurement_id }}');
+  </script>
+{% endif %}

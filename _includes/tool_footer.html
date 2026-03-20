@@ -1,0 +1,10 @@
+<footer class="site-footer">
+  {{ include.extra_top }}
+  <section id="related-work-root" class="related-work-root{% if include.related_contextual %} related-work-root-contextual{% endif %}" data-related-contextual="{% if include.related_contextual %}true{% else %}false{% endif %}"></section>
+  <div class="footer-credits">
+    {{ include.credits }}
+  </div>
+  {% if include.report_tool_title %}
+  <p class="footer-report-row"><a id="footer-report-problem" data-tool-title="{{ include.report_tool_title }}" href="https://github.com/enheragu/stat-tools/issues/new?template=tool_bug_report.yml" target="_blank" rel="noopener noreferrer"{% if include.report_label_i18n_key %} data-i18n="{{ include.report_label_i18n_key }}"{% endif %}>{% if include.report_label %}{{ include.report_label }}{% else %}Report problem{% endif %}</a></p>
+  {% endif %}
+</footer>

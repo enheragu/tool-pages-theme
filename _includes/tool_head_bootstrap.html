@@ -1,0 +1,17 @@
+{% if include.redirect_path %}
+<script>
+  (function () {
+    var p = window.location.pathname;
+    if (p === '{{ include.redirect_path }}') {
+      window.location.replace('{{ include.redirect_path }}/' + window.location.search + window.location.hash);
+    }
+  })();
+</script>
+{% endif %}
+<script>
+  (function () {
+    var saved = localStorage.getItem('theme');
+    var dark = saved ? saved === 'dark' : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (dark) document.documentElement.classList.add('dark');
+  })();
+</script>

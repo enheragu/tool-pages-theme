@@ -1,0 +1,16 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "{{ include.name }}",
+  "url": "{{ include.url }}/",
+  "applicationCategory": "{{ include.application_category | default: 'ResearchApplication' }}",
+  "operatingSystem": "{{ include.operating_system | default: 'Any' }}",
+  "inLanguage": ["en", "es"],
+  "description": "{{ include.description }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ include.author_name | default: 'Enrique Heredia-Aguado' }}"
+  }
+}
+</script>

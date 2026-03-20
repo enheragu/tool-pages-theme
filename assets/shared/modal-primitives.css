@@ -1,0 +1,111 @@
+/* Shared modal/backdrop/icon controls primitives */
+
+.shared-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: block;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.56);
+  backdrop-filter: blur(2px);
+}
+
+.shared-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  border: 1px solid var(--border, var(--clr-border));
+  background: var(--bg-secondary, var(--clr-surface));
+  color: var(--text-primary, var(--clr-text));
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: background .18s, color .18s, border-color .18s;
+}
+
+.shared-icon-btn-sm {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.shared-icon-btn:hover {
+  background: color-mix(in oklab, var(--bg-secondary, var(--clr-surface)) 88%, var(--accent, var(--clr-primary)));
+  color: var(--text-primary, var(--clr-text));
+  border-color: color-mix(in oklab, var(--accent, var(--clr-primary)) 55%, transparent);
+}
+
+body.dark .shared-icon-btn,
+:root[data-theme='dark'] .shared-icon-btn {
+  background: color-mix(in oklab, var(--bg-secondary, var(--clr-surface)) 78%, transparent);
+}
+
+.shared-icon-btn-accent {
+  border-color: var(--accent, var(--clr-primary));
+  color: var(--accent, var(--clr-primary));
+}
+
+.shared-icon-btn-accent:hover {
+  background: color-mix(in oklab, var(--accent, var(--clr-primary)) 14%, transparent);
+  border-color: var(--accent, var(--clr-primary));
+}
+
+.shared-icon-btn-danger {
+  border-color: var(--clr-danger-border-soft);
+  color: var(--clr-danger);
+}
+
+.shared-icon-btn-danger:hover {
+  background: var(--clr-danger-bg-soft);
+  border-color: var(--clr-danger);
+}
+
+.shared-icon-btn:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent, var(--clr-primary)) 70%, transparent);
+  outline-offset: 1px;
+}
+
+.shared-nav-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+}
+
+.shared-close-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+}
+
+.shared-corner-controls {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 2500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.icon-arrow,
+.icon-arrow svg,
+.icon-close,
+.icon-close svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.icon-close,
+.icon-close svg {
+  width: 14px;
+  height: 14px;
+}

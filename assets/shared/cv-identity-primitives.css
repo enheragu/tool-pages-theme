@@ -1,0 +1,182 @@
+/* Shared CV identity and chrome primitives (non-gitgraph). */
+
+h1 {
+  font-size: var(--txt-xl);
+  font-weight: var(--txt-w-semibold);
+  margin: 0.5em 0;
+  color: var(--text-primary, var(--clr-text));
+}
+
+h4 {
+  font-size: var(--txt-base);
+  font-weight: var(--txt-w-medium);
+  color: var(--text-primary, var(--clr-text));
+}
+
+.cv-header {
+  text-align: center;
+  padding: 0.3rem 0 0.8rem;
+  border-bottom: 1px solid var(--border, var(--clr-border));
+  margin-bottom: 1rem;
+}
+
+.cv-header h1 {
+  font-size: var(--txt-2xl);
+  font-weight: var(--txt-w-bold);
+  color: var(--text-primary, var(--clr-text));
+  margin-bottom: 0.15rem;
+  letter-spacing: -0.02em;
+}
+
+.cv-subtitle {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: var(--txt-sm-plus);
+  color: var(--text-muted, var(--clr-muted));
+  letter-spacing: 0.03em;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.6rem;
+}
+
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--text-secondary, color-mix(in oklab, var(--clr-text) 72%, var(--clr-muted)));
+  background: var(--bg-tertiary, var(--clr-chart-bg));
+  border: 1px solid var(--border, var(--clr-border));
+  transition: all 0.2s;
+}
+
+.social-links a:hover {
+  color: var(--accent, var(--clr-primary));
+  border-color: var(--accent, var(--clr-primary));
+  transform: translateY(-1px);
+}
+
+.social-links a svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.social-links a img {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+}
+
+.cv-footer,
+.site-footer {
+  text-align: right;
+  padding: 1rem 0 0.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border, var(--clr-border));
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: var(--txt-xs);
+  color: var(--text-muted, var(--clr-muted));
+  letter-spacing: 0.03em;
+}
+
+.site-footer {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.page-header {
+  position: relative;
+  text-align: center;
+  padding: 0.3rem 0 0.8rem;
+  border-bottom: 1px solid var(--border, var(--clr-border));
+  margin-bottom: 1rem;
+}
+
+.page-header h1 {
+  font-size: var(--txt-xl-plus);
+  font-weight: var(--txt-w-bold);
+  color: var(--text-primary, var(--clr-text));
+  margin-bottom: 0.15rem;
+  letter-spacing: -0.02em;
+}
+
+.page-brand-muted {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 0.2rem;
+  transform: translateX(-50%);
+  width: max-content;
+  color: var(--text-muted, var(--clr-muted));
+  font-weight: var(--txt-w-medium);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: var(--txt-xs);
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.page-subtitle {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: var(--txt-sm-plus);
+  color: var(--text-muted, var(--clr-muted));
+  letter-spacing: 0.03em;
+}
+
+@media screen and (max-width: 768px) {
+  .cv-header h1 {
+    font-size: var(--txt-xl);
+  }
+
+  .cv-subtitle {
+    font-size: var(--txt-xs);
+  }
+
+  .social-links {
+    gap: 0.5rem;
+  }
+
+  .social-links a {
+    width: 28px;
+    height: 28px;
+  }
+
+  .social-links a svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .cv-footer,
+  .site-footer {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .cv-header h1 {
+    font-size: var(--txt-lg-plus);
+  }
+
+  .cv-subtitle {
+    font-size: var(--txt-2xs);
+  }
+
+  .social-links a {
+    width: 24px;
+    height: 24px;
+  }
+
+  .social-links a svg {
+    width: 12px;
+    height: 12px;
+  }
+}

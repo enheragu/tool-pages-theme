@@ -1,0 +1,40 @@
+{% assign card_tag = include.tag | default: 'section' %}
+{% assign card_class = include.card_class | default: 'panel panel-chart card shared-plot-card' %}
+{% assign title_class = include.title_class | default: 'shared-plot-title' %}
+{% assign button_class = include.button_class | default: 'btn-outline btn-chart-expand' %}
+{% assign button_label = include.button_label | default: 'Expand' %}
+{% assign canvas_class = include.canvas_class | default: 'shared-plot-canvas' %}
+
+{% assign resolved_title_id = include.title_id %}
+{% assign resolved_button_id = include.button_id %}
+{% assign resolved_canvas_id = include.canvas_id %}
+{% if include.id_key and include.id_key != '' %}
+  {% if include.id_key == 'chart' %}
+    {% assign resolved_title_id = resolved_title_id | default: 'chart-title' %}
+    {% assign resolved_button_id = resolved_button_id | default: 'btn-expand-chart' %}
+    {% assign resolved_canvas_id = resolved_canvas_id | default: 'distribution-chart' %}
+  {% elsif include.id_key == 'hist' %}
+    {% assign resolved_title_id = resolved_title_id | default: 'sim-hist-title' %}
+    {% assign resolved_button_id = resolved_button_id | default: 'btn-expand-hist' %}
+    {% assign resolved_canvas_id = resolved_canvas_id | default: 'sim-hist-canvas' %}
+  {% else %}
+    {% assign resolved_title_id = resolved_title_id | default: include.id_key | append: '-title' %}
+    {% assign resolved_button_id = resolved_button_id | default: 'btn-expand-' | append: include.id_key %}
+    {% assign resolved_canvas_id = resolved_canvas_id | default: include.id_key | append: '-canvas' %}
+  {% endif %}
+{% endif %}
+
+<{{ card_tag }}{% if include.card_id %} id="{{ include.card_id }}"{% endif %} class="{{ card_class }}">
+  <div class="card-headline shared-plot-headline">
+    <h3{% if resolved_title_id %} id="{{ resolved_title_id }}"{% endif %} class="{{ title_class }}"{% if include.title_i18n_key %} data-i18n="{{ include.title_i18n_key }}"{% endif %}>{{ include.title }}</h3>
+    {% if include.expand_button != false %}
+    <button{% if resolved_button_id %} id="{{ resolved_button_id }}"{% endif %} class="{{ button_class }}" type="button"{% if include.button_i18n_key %} data-i18n="{{ include.button_i18n_key }}"{% endif %}>{{ button_label }}</button>
+    {% endif %}
+    {% if include.header_extra %}
+    {{ include.header_extra }}
+    {% endif %}
+  </div>
+  <div class="chart-wrap">
+    <canvas{% if resolved_canvas_id %} id="{{ resolved_canvas_id }}"{% endif %} class="{{ canvas_class }}"></canvas>
+  </div>
+</{{ card_tag }}>

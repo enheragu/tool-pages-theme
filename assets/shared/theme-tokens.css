@@ -1,0 +1,161 @@
+:root {
+  /* Base palette: edit these six to retone the whole system. */
+  --pal-gray: #6e7681;
+  --pal-blue: #58a6ff;
+  --pal-amber: #d29922;
+  --pal-cyan: #79c0ff;
+  --pal-green: #3fb950;
+  --pal-red: #f85149;
+  --pal-purple: #bc8cff;
+
+  /* Mix tuning knobs: adjust these to globally soften/strengthen UI tone. */
+  --mix-danger-strong: 84%;
+  --mix-danger-soft: 12%;
+  --mix-danger-border-soft: 45%;
+  --mix-danger-bg-soft: 16%;
+  --mix-segmented-surface: 58%;
+  --mix-focus-ring-primary: 45%;
+  --mix-ui-icon-text: 72%;
+  --mix-ui-track-primary-light: 58%;
+  --mix-status-error-danger-light: 74%;
+  --mix-status-success-green-light: 78%;
+  --mix-alert-bg-danger: 12%;
+  --mix-alert-border-danger: 42%;
+
+  /* Core semantic palette (light defaults) */
+  --clr-bg: #f4f6f9;
+  --clr-surface: #ffffff;
+  --clr-border: #dde1e7;
+  --clr-text: #3a4658;
+  --clr-muted: var(--pal-gray);
+  --clr-primary: var(--pal-blue);
+  --clr-primary-h: var(--pal-purple);
+  --clr-on-primary: #ffffff;
+  --clr-data-red: var(--pal-red);
+  --clr-data-gray: var(--pal-gray);
+  --clr-data-green: var(--pal-green);
+  --clr-data-blue: var(--pal-blue);
+  --clr-data-amber: var(--pal-amber);
+  --clr-data-cyan: var(--pal-cyan);
+  --clr-data-purple: var(--pal-purple);
+  --clr-danger: var(--pal-red);
+  --clr-danger-strong: color-mix(in oklab, var(--clr-danger) var(--mix-danger-strong), black);
+  --clr-danger-soft: color-mix(in oklab, var(--clr-danger) var(--mix-danger-soft), transparent);
+  --clr-danger-border-soft: color-mix(in oklab, var(--clr-danger) var(--mix-danger-border-soft), var(--clr-border));
+  --clr-danger-bg-soft: color-mix(in oklab, var(--clr-danger) var(--mix-danger-bg-soft), var(--clr-surface));
+  --clr-segmented-hover: color-mix(in oklab, var(--clr-surface) var(--mix-segmented-surface), var(--clr-border));
+  --clr-tab-bg: color-mix(in oklab, var(--clr-bg) 52%, var(--clr-surface));
+  --clr-tab-bg-hover: color-mix(in oklab, var(--clr-segmented-hover) 72%, var(--clr-surface));
+  --clr-tab-bg-active: var(--clr-surface);
+  --clr-tab-text: var(--clr-muted);
+  --clr-tab-text-active: var(--clr-primary);
+
+  /* Shared overlays and UI accents */
+  --clr-overlay-soft: rgba(0,0,0,.45);
+  --clr-overlay-medium: rgba(0,0,0,.58);
+  --clr-overlay-strong: rgba(0,0,0,.74);
+  --clr-overlay-tinted: rgba(8,12,20,.62);
+  --clr-ui-focus-ring: color-mix(in oklab, var(--clr-primary) var(--mix-focus-ring-primary), transparent);
+  --clr-ui-icon: color-mix(in oklab, var(--clr-text) var(--mix-ui-icon-text), var(--clr-muted));
+  --clr-ui-track: color-mix(in oklab, var(--clr-primary) var(--mix-ui-track-primary-light), white);
+  --clr-ui-thumb: var(--clr-primary);
+  --clr-ui-border-soft: rgba(30,64,110,.18);
+  --clr-ui-border-strong: rgba(30,64,110,.32);
+  --clr-ui-text-muted: var(--clr-muted);
+
+  /* State colors */
+  --clr-checkbox-hover: #f1f5f9;
+  --clr-status-error: color-mix(in oklab, var(--clr-danger) var(--mix-status-error-danger-light), var(--clr-text));
+  --clr-status-success: color-mix(in oklab, var(--clr-data-green) var(--mix-status-success-green-light), var(--clr-text));
+  --clr-alert-bg: color-mix(in oklab, var(--clr-danger) var(--mix-alert-bg-danger), var(--clr-surface));
+  --clr-alert-border: color-mix(in oklab, var(--clr-danger) var(--mix-alert-border-danger), var(--clr-border));
+  --clr-tooltip-bg: #0f172a;
+  --clr-tooltip-text: #e2e8f0;
+  --clr-tooltip-border: #334155;
+  --clr-chart-bg: #ffffff;
+  --clr-chart-grid: rgba(148,163,184,.28);
+
+  /* Elevation tokens */
+  --radius: 8px;
+  --shadow: 0 1px 4px rgba(0,0,0,.10);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.10);
+  --shadow-ui: 0 2px 4px rgba(0,0,0,.18);
+  --shadow-pulse: 0 1px 2px rgba(0,0,0,.2);
+  --shadow-pulse-peak: 0 0 0 4px rgba(255,255,255,.28), 0 2px 5px rgba(0,0,0,.22);
+  --shadow-side: -4px 0 15px rgba(0,0,0,.3);
+  --shadow-stage: 0 4px 30px rgba(0,0,0,.5);
+  --shadow-panel: 0 10px 22px rgba(0,0,0,.22);
+  --shadow-dialog: 0 10px 30px rgba(0,0,0,.5);
+  --shadow-modal: 0 8px 32px rgba(0,0,0,.2);
+  --shadow-modal-lg: 0 14px 40px rgba(0,0,0,.35);
+  --shadow-popover-strong: 0 18px 42px rgba(0,0,0,.46);
+  --shadow-popover-soft: 0 18px 42px rgba(0,0,0,.37);
+  --shadow-thumb-ring: 0 0 0 1px rgba(0,0,0,.35);
+  --shadow-soft-card: 0 3px 14px rgba(0,0,0,.06);
+  --header-h: 64px;
+}
+
+/* Dark mode via class on html/body or explicit data-theme attribute. */
+:root.dark,
+:root[data-theme='dark'],
+body.dark,
+html.dark body {
+  --mix-muted-gray-dark: 52%;
+  --mix-segmented-surface-dark: 74%;
+  --mix-ui-track-primary-dark: 44%;
+  --mix-ui-thumb-primary-dark: 30%;
+  --mix-ui-text-muted-dark: 82%;
+  --mix-status-error-danger-dark: 62%;
+  --mix-status-success-green-dark: 62%;
+  --clr-bg: #0d1117;
+  --clr-surface: #161b22;
+  --clr-border: #30363d;
+  --clr-text: #e6edf3;
+  --clr-muted: color-mix(in oklab, var(--pal-gray) var(--mix-muted-gray-dark), white);
+  --clr-segmented-hover: color-mix(in oklab, var(--clr-surface) var(--mix-segmented-surface-dark), white);
+  --clr-danger-border-soft: color-mix(in oklab, var(--clr-danger) var(--mix-danger-border-soft), var(--clr-border));
+  --clr-danger-bg-soft: color-mix(in oklab, var(--clr-danger) var(--mix-danger-bg-soft), var(--clr-surface));
+  --clr-tab-bg: color-mix(in oklab, var(--clr-surface) 80%, black);
+  --clr-tab-bg-hover: color-mix(in oklab, var(--clr-segmented-hover) 68%, var(--clr-surface));
+  --clr-tab-bg-active: var(--clr-surface);
+  --clr-tab-text: var(--clr-ui-text-muted);
+  --clr-tab-text-active: var(--clr-primary);
+  --clr-ui-track: color-mix(in oklab, var(--clr-primary) var(--mix-ui-track-primary-dark), black);
+  --clr-ui-thumb: color-mix(in oklab, var(--clr-primary) var(--mix-ui-thumb-primary-dark), black);
+  --clr-ui-border-soft: rgba(147,197,253,.18);
+  --clr-ui-border-strong: rgba(148,163,184,.35);
+  --clr-ui-text-muted: color-mix(in oklab, var(--clr-muted) var(--mix-ui-text-muted-dark), var(--clr-text));
+  --clr-checkbox-hover: #17233a;
+  --clr-status-error: color-mix(in oklab, var(--clr-danger) var(--mix-status-error-danger-dark), white);
+  --clr-status-success: color-mix(in oklab, var(--clr-data-green) var(--mix-status-success-green-dark), white);
+  --clr-alert-bg: #3b1515;
+  --clr-alert-border: color-mix(in oklab, var(--clr-danger) var(--mix-alert-border-danger), var(--clr-border));
+  --clr-chart-bg: #1b2129;
+  --clr-chart-grid: rgba(230,237,243,.22);
+  --shadow: 0 1px 8px rgba(0,0,0,.40);
+}
+
+/* Explicit light mode wins over class-based dark mode. */
+:root[data-theme='light'] {
+  --clr-bg: #f4f6f9;
+  --clr-surface: #ffffff;
+  --clr-border: #dde1e7;
+  --clr-text: #3a4658;
+  --clr-muted: var(--pal-gray);
+  --clr-segmented-hover: color-mix(in oklab, var(--clr-surface) var(--mix-segmented-surface), var(--clr-border));
+  --clr-danger-border-soft: color-mix(in oklab, var(--clr-danger) var(--mix-danger-border-soft), var(--clr-border));
+  --clr-danger-bg-soft: color-mix(in oklab, var(--clr-danger) var(--mix-danger-bg-soft), var(--clr-surface));
+  --clr-ui-track: color-mix(in oklab, var(--clr-primary) var(--mix-ui-track-primary-light), white);
+  --clr-ui-thumb: var(--clr-primary);
+  --clr-ui-border-soft: rgba(30,64,110,.18);
+  --clr-ui-border-strong: rgba(30,64,110,.32);
+  --clr-ui-text-muted: var(--clr-muted);
+  --clr-checkbox-hover: #f1f5f9;
+  --clr-status-error: color-mix(in oklab, var(--clr-danger) var(--mix-status-error-danger-light), var(--clr-text));
+  --clr-status-success: color-mix(in oklab, var(--clr-data-green) var(--mix-status-success-green-light), var(--clr-text));
+  --clr-alert-bg: color-mix(in oklab, var(--clr-danger) var(--mix-alert-bg-danger), var(--clr-surface));
+  --clr-alert-border: color-mix(in oklab, var(--clr-danger) var(--mix-alert-border-danger), var(--clr-border));
+  --clr-chart-bg: #ffffff;
+  --clr-chart-grid: rgba(148,163,184,.28);
+  --shadow: 0 1px 4px rgba(0,0,0,.10);
+}

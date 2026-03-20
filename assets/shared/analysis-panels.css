@@ -1,0 +1,28 @@
+.shared-sim-setup-block {
+  margin-top: .62rem;
+  padding: .72rem 0 0;
+  border-top: 1px solid color-mix(in oklab, var(--clr-border) 75%, transparent);
+}
+
+.shared-sim-setup-block .hint {
+  margin: 0;
+}
+
+.shared-status-hint {
+  margin: .1rem 0 0;
+  min-height: 1.1rem;
+  font-size: var(--txt-sm);
+  color: var(--txt-muted, var(--clr-muted));
+}
+
+.shared-status-hint.is-busy {
+  color: var(--clr-primary);
+}
+
+.shared-status-hint[data-type='error'] {
+  color: var(--clr-status-error, var(--clr-danger));
+}
+
+.shared-status-hint[data-type='ok'] {
+  color: var(--clr-status-success);
+}

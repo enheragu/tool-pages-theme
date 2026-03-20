@@ -1,0 +1,44 @@
+/* Shared expanded media stage sizing (gallery + harris) */
+
+.shared-lightbox-stage {
+  --shared-lightbox-max-w: 900px;
+  --shared-lightbox-max-h: calc(100vh - 96px);
+  position: relative;
+  width: min(1500px, calc(100vw - 16px));
+  height: calc(100vh - 16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.shared-lightbox-media {
+  width: auto;
+  height: auto;
+  max-width: min(calc(100vw - 100px), var(--shared-lightbox-max-w));
+  max-height: var(--shared-lightbox-max-h);
+  margin: 0;
+  border: 0;
+  background: transparent;
+}
+
+.shared-lightbox-frame {
+  border-radius: var(--radius, 8px);
+  box-shadow: var(--shadow-stage);
+  animation: shared-lightbox-zoom 0.3s ease;
+}
+
+@keyframes shared-lightbox-zoom {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .shared-lightbox-stage {
+    --shared-lightbox-max-w: calc(100vw - 84px);
+    --shared-lightbox-max-h: calc(100vh - 110px);
+    width: calc(100vw - 8px);
+    height: calc(100vh - 8px);
+  }
+}

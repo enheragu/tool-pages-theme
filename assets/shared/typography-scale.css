@@ -1,0 +1,36 @@
+/* Shared typography scale tokens */
+
+:root {
+  --txt-ui: 14px;
+
+  --txt-2xs: .68rem;
+  --txt-xs: .74rem;
+  --txt-sm: .8rem;
+  --txt-sm-plus: .82rem;
+  --txt-md: .84rem;
+  --txt-md-plus: .88rem;
+  --txt-base: .95rem;
+  --txt-base-plus: 1rem;
+  --txt-lg: 1.03rem;
+  --txt-lg-plus: 1.05rem;
+  --txt-xl: 1.5rem;
+  --txt-display: 2.2rem;
+
+  --txt-w-regular: 400;
+  --txt-w-medium: 500;
+  --txt-w-semibold: 600;
+  --txt-w-bold: 700;
+  --txt-w-extrabold: 800;
+
+  --txt-lh-tight: 1.35;
+  --txt-lh-body: 1.5;
+  --txt-lh-relaxed: 1.55;
+
+  --txt-tracking-tight: -0.02em;
+  --txt-tracking-normal: .01em;
+  --txt-tracking-wide: .03em;
+
+  --txt-primary: var(--clr-text);
+  --txt-muted: var(--clr-muted);
+  --txt-accent: var(--clr-primary);
+}

@@ -1,0 +1,519 @@
+/* Shared publication actions UI (CV + related-work) */
+
+/* Publication list container in CV details */
+.pub-box {
+  margin: .5rem 0 0;
+}
+
+.pub-box h4 {
+  margin: 0 0 .35rem;
+  font-size: var(--txt-md);
+  color: var(--accent, var(--clr-primary));
+}
+
+.pub-box-scroll {
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: .2rem;
+}
+
+.pub-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  display: grid;
+  gap: .34rem;
+}
+
+.pub-list > li {
+  border-left: 2px solid var(--border, var(--clr-border));
+  padding-left: .45rem;
+}
+
+.pub-list > li:hover {
+  border-left-color: var(--accent, var(--clr-primary));
+}
+
+.pub-type-badge {
+  display: inline-block;
+  margin-right: .32rem;
+  padding: 0 4px;
+  border: 1px solid var(--border, var(--clr-border));
+  border-radius: 3px;
+  background: color-mix(in oklab, var(--bg-tertiary, var(--clr-chart-bg)) 84%, var(--bg-secondary, var(--clr-surface)));
+  color: var(--accent, var(--clr-primary));
+  font-size: var(--txt-xs);
+  font-weight: var(--txt-w-semibold);
+  letter-spacing: var(--txt-tracking-normal);
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+/* Shared repository cards (used by repo_card include) */
+.repo-box {
+  margin: .55rem 0 0;
+}
+
+.repo-box h4 {
+  margin: 0 0 .4rem;
+  font-size: var(--txt-md);
+  color: var(--accent, var(--clr-primary));
+}
+
+.repo-cards {
+  display: grid;
+  gap: .56rem;
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+}
+
+.repo-card {
+  display: block;
+  text-decoration: none;
+  border: 1px solid var(--border, var(--clr-border));
+  border-radius: 8px;
+  background: var(--bg-secondary, var(--clr-surface));
+  box-shadow: var(--shadow-sm, var(--shadow));
+  padding: .62rem .64rem;
+  min-height: 108px;
+  transition: border-color .12s ease, transform .12s ease, box-shadow .12s ease;
+}
+
+.repo-card:hover,
+.repo-card:focus-visible {
+  border-color: var(--accent, var(--clr-primary));
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.repo-card-header {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  margin-bottom: .28rem;
+}
+
+.repo-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--accent, var(--clr-primary));
+  fill: currentColor;
+  flex: 0 0 auto;
+}
+
+.repo-name {
+  color: var(--text-primary, var(--clr-text));
+  font-weight: var(--txt-w-semibold);
+  font-size: var(--txt-sm);
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.repo-desc {
+  margin: .14rem 0 .42rem;
+  color: var(--text-muted, var(--clr-muted));
+  font-size: var(--txt-xs);
+  line-height: var(--txt-lh-tight);
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.repo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .42rem;
+  color: var(--text-muted, var(--clr-muted));
+  font-size: var(--txt-xs);
+}
+
+.repo-lang,
+.repo-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: .2rem;
+}
+
+/* CV publication badges/actions */
+.pub-list li a,
+.pub-cite-badge,
+.link-badge {
+  font-family: var(--font-mono);
+  font-size: var(--txt-xs);
+  line-height: 1.1;
+  height: 1.2rem;
+  padding: 0 6px;
+  border-radius: 3px;
+  background: color-mix(in oklab, var(--bg-tertiary, var(--clr-chart-bg)) 84%, var(--bg-secondary, var(--clr-surface)));
+  border: 1px solid var(--border, var(--clr-border));
+  color: var(--accent, var(--clr-primary));
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.pub-list li a {
+  margin-left: 0.3rem;
+}
+
+.pub-list li a:hover,
+.link-badge:hover {
+  background: color-mix(in oklab, var(--accent, var(--clr-primary)) 14%, var(--bg-secondary, var(--clr-surface)));
+  border-color: var(--accent, var(--clr-primary));
+  color: var(--accent, var(--clr-primary));
+  text-decoration: none;
+}
+
+.pub-list li a:focus-visible,
+.link-badge:focus-visible {
+  background: color-mix(in oklab, var(--accent, var(--clr-primary)) 14%, var(--bg-secondary, var(--clr-surface)));
+  border-color: var(--accent, var(--clr-primary));
+  color: var(--accent, var(--clr-primary));
+  text-decoration: none;
+}
+
+.pub-action-link {
+  margin-left: 0.3rem;
+  text-decoration: none;
+}
+
+.pub-cite,
+.related-work-cite {
+  display: inline-block;
+  margin-left: 0.28rem;
+  margin-top: 0;
+  vertical-align: baseline;
+}
+
+.pub-cite-summary,
+.related-work-cite-summary {
+  display: inline-flex;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.1;
+  vertical-align: baseline;
+  text-decoration: none;
+}
+
+.pub-cite-summary:hover,
+.pub-cite-summary:focus-visible,
+.related-work-cite-summary:hover,
+.related-work-cite-summary:focus-visible {
+  background: color-mix(in oklab, var(--accent, var(--clr-primary)) 14%, var(--bg-secondary, var(--clr-surface)));
+  border-color: var(--accent, var(--clr-primary));
+  color: var(--accent, var(--clr-primary));
+  text-decoration: none;
+}
+
+/* Keep badge links blue on hover inside CV gitgraph panels (avoid generic purple link hover). */
+.gitgraph-detail a.link-badge:hover,
+.gitgraph-detail a.link-badge:focus-visible,
+.gitgraph-detail a.pub-action-link:hover,
+.gitgraph-detail a.pub-action-link:focus-visible {
+  background: color-mix(in oklab, var(--accent, var(--clr-primary)) 14%, var(--bg-secondary, var(--clr-surface)));
+  border-color: var(--accent, var(--clr-primary));
+  color: var(--accent, var(--clr-primary));
+  text-decoration: none;
+}
+
+.pub-cite-badge {
+  vertical-align: baseline;
+}
+
+.pub-cite-summary::-webkit-details-marker {
+  display: none;
+}
+
+.related-work-cite-summary::-webkit-details-marker {
+  display: none;
+}
+
+.pub-cite-summary::marker {
+  content: "";
+}
+
+.related-work-cite-summary::marker {
+  content: "";
+}
+
+.pub-cite[open] .pub-cite-summary {
+  border-color: var(--accent, var(--clr-primary));
+}
+
+.pub-cite-popover {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1100;
+  width: min(860px, calc(100vw - 1rem));
+  max-width: 100%;
+  max-height: min(88vh, 860px);
+  overflow: auto;
+  padding: 0.68rem 0.7rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border, var(--clr-border));
+  background: var(--bg-secondary, var(--clr-surface));
+  box-shadow: var(--shadow-popover-strong);
+}
+
+.pub-cite-backdrop {
+  display: none;
+  z-index: 1090;
+}
+
+.pub-cite[open] .pub-cite-popover,
+.pub-cite[open] .pub-cite-backdrop {
+  display: block;
+}
+
+.pub-cite-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 0.46rem;
+}
+
+.pub-cite-title {
+  margin: 0;
+  font-size: var(--txt-base);
+  text-transform: none;
+  letter-spacing: var(--txt-tracking-normal);
+  color: var(--accent, var(--clr-primary));
+  font-family: var(--font-mono);
+  font-weight: var(--txt-w-bold);
+}
+
+.pub-cite-copy,
+.pub-cite-close {
+  cursor: pointer;
+  user-select: none;
+}
+
+.pub-cite-content {
+  display: block;
+  margin: 0;
+  padding: 0.56rem 2.35rem 0.56rem 0.56rem;
+  background: var(--bg-tertiary, var(--clr-chart-bg));
+  border: 1px solid var(--border, var(--clr-border));
+  border-radius: var(--radius);
+  color: var(--text-secondary, color-mix(in oklab, var(--clr-text) 72%, var(--clr-muted)));
+  font-family: var(--font-mono);
+  font-size: var(--txt-md);
+  line-height: var(--txt-lh-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 220px;
+  overflow: auto;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}
+
+.pub-cite-format {
+  padding: 0;
+  margin-bottom: 0.7rem;
+}
+
+.pub-cite-format:last-child {
+  margin-bottom: 0;
+}
+
+.pub-cite-format-title {
+  margin: 0 0 0.28rem;
+  font-size: var(--txt-sm-plus);
+  color: var(--accent, var(--clr-primary));
+  font-weight: var(--txt-w-semibold);
+}
+
+.pub-cite-content-wrap {
+  position: relative;
+}
+
+body.pubui-selection-lock {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body.pubui-selection-lock [data-pubui-cite-content] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+body.pubui-selection-lock .shared-modal-backdrop {
+  pointer-events: none;
+}
+
+.pub-cite-close,
+.related-work-cite-close {
+  min-width: 1.6rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: var(--txt-base-plus);
+  line-height: 1;
+}
+
+.pub-cite-copy,
+.related-work-cite-copy {
+  min-width: 1.7rem;
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: var(--txt-base-plus);
+  line-height: 1;
+}
+
+.pub-cite-copy.copied {
+  border-color: var(--accent, var(--clr-primary));
+  color: var(--accent, var(--clr-primary));
+}
+
+.pub-cite-content-wrap .pub-cite-copy {
+  position: absolute;
+  top: 0.34rem;
+  right: 0.36rem;
+  z-index: 2;
+}
+
+/* Related-work cite popup details */
+
+.related-work-inline-link.link-badge {
+  height: 1.2rem;
+  min-height: 1.2rem;
+  line-height: 1.1;
+  padding: 0 6px;
+}
+
+.related-work-item-cite > .related-work-inline-link,
+.related-work-item-pub > .related-work-inline-link {
+  margin-left: 0.3rem;
+}
+
+.related-work-item-cite .related-work-cite {
+  margin-left: 0.3rem;
+}
+
+.related-work-item-cite .related-work-cite-summary,
+.related-work-item-pub .related-work-cite-summary {
+  margin-left: 0;
+}
+
+.related-work-cite-popover {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1120;
+  width: min(860px, calc(100vw - 1rem));
+  max-width: 100%;
+  max-height: min(88vh, 860px);
+  overflow: auto;
+  padding: .68rem .7rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--clr-border);
+  background: var(--clr-surface);
+  box-shadow: var(--shadow-popover-soft);
+}
+
+.related-work-cite-backdrop {
+  display: none;
+  z-index: 1110;
+}
+
+.related-work-cite[open] .related-work-cite-popover,
+.related-work-cite[open] .related-work-cite-backdrop {
+  display: block;
+}
+
+.related-work-cite-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: .42rem;
+}
+
+.related-work-cite-title {
+  margin: 0;
+  color: var(--clr-primary);
+  font-size: var(--txt-base);
+  font-weight: var(--txt-w-bold);
+  letter-spacing: var(--txt-tracking-normal);
+  text-transform: none;
+}
+
+.related-work-cite-format {
+  padding: 0;
+  margin-bottom: .7rem;
+}
+
+.related-work-cite-format:last-child {
+  margin-bottom: 0;
+}
+
+.related-work-cite-format-title {
+  margin: 0 0 .28rem;
+  font-size: var(--txt-sm-plus);
+  color: var(--clr-primary);
+  font-weight: var(--txt-w-semibold);
+}
+
+.related-work-cite-copy.copied {
+  border-color: var(--clr-primary);
+  color: var(--clr-primary);
+}
+
+.related-work-cite-pre {
+  margin: .1rem 0 .2rem;
+  padding: .56rem 2.35rem .56rem .56rem;
+  border: 1px solid var(--clr-border);
+  border-radius: 5px;
+  background: var(--clr-chart-bg);
+  color: var(--clr-muted);
+  font-size: var(--txt-md);
+  line-height: var(--txt-lh-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 220px;
+  overflow: auto;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}
+
+.related-work-cite-content-wrap {
+  position: relative;
+}
+
+.related-work-cite-content-wrap .related-work-cite-copy {
+  position: absolute;
+  top: .34rem;
+  right: .36rem;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .pub-cite-popover,
+  .related-work-cite-popover {
+    width: min(760px, calc(100vw - 0.7rem));
+    max-height: 85vh;
+    padding: 0.5rem;
+  }
+
+  .pub-cite-content,
+  .related-work-cite-pre {
+    max-height: 180px;
+  }
+}

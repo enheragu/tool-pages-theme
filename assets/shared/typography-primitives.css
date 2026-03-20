@@ -1,0 +1,51 @@
+/* Shared typography primitives */
+
+@import url('./typography-scale.css');
+
+.shared-title-page {
+  font-size: var(--txt-xl);
+  font-weight: var(--txt-w-extrabold);
+  letter-spacing: var(--txt-tracking-normal);
+  color: var(--txt-accent);
+  line-height: 1.1;
+}
+
+.shared-title-section {
+  font-size: var(--txt-lg);
+  font-weight: var(--txt-w-bold);
+  color: var(--txt-accent);
+  line-height: var(--txt-lh-tight);
+}
+
+.shared-title-subsection {
+  font-size: var(--txt-base);
+  font-weight: var(--txt-w-bold);
+  color: var(--txt-accent);
+  line-height: var(--txt-lh-tight);
+}
+
+.shared-text-body {
+  font-size: var(--txt-md);
+  line-height: var(--txt-lh-relaxed);
+  color: var(--txt-primary);
+}
+
+.shared-text-muted {
+  font-size: var(--txt-sm);
+  line-height: var(--txt-lh-tight);
+  color: var(--txt-muted);
+}
+
+.shared-text-caption {
+  font-size: var(--txt-xs);
+  line-height: var(--txt-lh-tight);
+  color: var(--txt-muted);
+}
+
+.shared-text-overline {
+  font-size: var(--txt-2xs);
+  font-weight: var(--txt-w-semibold);
+  letter-spacing: var(--txt-tracking-wide);
+  text-transform: uppercase;
+  color: var(--txt-muted);
+}

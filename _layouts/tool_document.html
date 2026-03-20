@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% assign tool_document_parts = content | split: '<!--THEME_BODY-->' %}
+  {% if page.compact_mode %}
+    {% assign resolved_tool_name = page.tool_name | default: page.header_title | default: site.title | default: 'Tool' %}
+    {% assign resolved_tool_path = page.redirect_path | default: page.url %}
+    {% assign resolved_tool_url = page.tool_url | default: site.url | append: resolved_tool_path %}
+    {% assign resolved_header_title = page.header_title | default: page.title | default: resolved_tool_name %}
+    {% if page.meta_title %}
+      {% assign resolved_meta_title = page.meta_title %}
+    {% elsif resolved_header_title contains resolved_tool_name or resolved_header_title == resolved_tool_name %}
+      {% assign resolved_meta_title = resolved_header_title %}
+    {% else %}
+      {% assign resolved_meta_title = resolved_header_title | append: ' - ' | append: resolved_tool_name %}
+    {% endif %}
+    {% assign resolved_meta_description = page.meta_description | default: page.description | default: '' %}
+    {% assign resolved_og_title = page.og_title | default: resolved_meta_title %}
+    {% assign resolved_og_description = page.og_description | default: resolved_meta_description %}
+    {% assign resolved_og_image_alt = page.og_image_alt | default: resolved_header_title | append: ' preview image' %}
+    {% assign resolved_shared_scripts_project = page.shared_scripts_project | default: page.project %}
+    {% include tool_head_bootstrap.html redirect_path=page.redirect_path %}
+    {% if resolved_meta_title and resolved_tool_url %}
+      {% include tool_head_meta.html
+        project=page.project
+        title=resolved_meta_title
+        title_i18n_key=page.title_i18n_key
+        description=resolved_meta_description
+        tool_name=resolved_tool_name
+        url=resolved_tool_url
+        theme_color=page.theme_color
+        og_locale=page.og_locale
+        og_title=resolved_og_title
+        og_description=resolved_og_description
+        og_image=page.og_image
+        og_image_alt=resolved_og_image_alt
+        twitter_title=page.twitter_title
+        twitter_description=page.twitter_description
+        icon_href=page.icon_href
+        lang_mode=page.lang_mode
+        with_manifest=page.with_manifest
+        with_i18n_meta_ids=page.with_i18n_meta_ids
+      %}
+    {% endif %}
+    {% assign resolved_analytics_measurement_id = page.analytics_measurement_id | default: '' %}
+    {% assign resolved_analytics_enabled = page.analytics_enabled %}
+    {% if resolved_analytics_enabled == nil and resolved_analytics_measurement_id != '' %}
+      {% assign resolved_analytics_enabled = true %}
+    {% endif %}
+    {% if resolved_analytics_enabled and resolved_analytics_measurement_id != '' %}
+      {% include tool_analytics.html
+        enabled=resolved_analytics_enabled
+        measurement_id=resolved_analytics_measurement_id
+      %}
+    {% endif %}
+
+    {% assign resolved_webapp_name = page.webapp_name | default: resolved_tool_name %}
+    {% assign resolved_webapp_description = page.webapp_description | default: resolved_meta_description %}
+    {% if resolved_webapp_name and resolved_tool_url %}
+      {% include tool_webapp_jsonld.html
+        name=resolved_webapp_name
+        url=resolved_tool_url
+        application_category=page.webapp_application_category
+        description=resolved_webapp_description
+      %}
+    {% endif %}
+    {% if page.project %}
+      {% include tool_shared_css.html
+        project=page.project
+        with_checkbox_list=page.with_checkbox_list
+      %}
+    {% endif %}
+    {% assign compact_css_assets = page.custom_css | arrayify %}
+    {% if compact_css_assets.size == 0 and page.auto_style_css != false %}
+      {% assign compact_css_assets = 'css/style.css' | split: ',' %}
+    {% endif %}
+    {% for stylesheet in compact_css_assets %}
+      <link rel="stylesheet" href="{{ stylesheet }}">
+    {% endfor %}
+    {% assign compact_head_js_assets = page.head_js | arrayify %}
+    {% for jsfile in compact_head_js_assets %}
+      <script src="{{ jsfile }}"></script>
+    {% endfor %}
+    {{ page.extra_head_html }}
+  {% else %}
+    {{ tool_document_parts | first }}
+  {% endif %}
+</head>
+<body>
+  {% if page.compact_mode %}
+    {% if page.header_title %}
+      {% assign resolved_header_title_id = page.header_title_id | default: 'site-title' %}
+      {% assign resolved_header_subtitle_id = page.header_subtitle_id | default: 'site-subtitle' %}
+      {% include tool_header.html
+        title=page.header_title
+        title_id=resolved_header_title_id
+        title_i18n_key=page.header_title_i18n_key
+        subtitle=page.header_subtitle
+        subtitle_id=resolved_header_subtitle_id
+        subtitle_i18n_key=page.header_subtitle_i18n_key
+      %}
+    {% endif %}
+
+    {% if page.wrap_content_shell == true %}
+    <div class="content-shell">
+    {% endif %}
+
+    {% if page.intro_title %}
+      {% assign resolved_intro_title_id = page.intro_title_id | default: 'intro-title' %}
+      {% assign resolved_intro_text_id = page.intro_text_id | default: 'intro-text' %}
+      {% include tool_intro.html
+        title=page.intro_title
+        title_id=resolved_intro_title_id
+        title_i18n_key=page.intro_title_i18n_key
+        text=page.intro_text
+        text_id=resolved_intro_text_id
+        text_i18n_key=page.intro_text_i18n_key
+        text_i18n_html_key=page.intro_text_i18n_html_key
+        inline_cite=page.intro_inline_cite
+      %}
+    {% endif %}
+
+    {{ content }}
+
+    {% if page.wrap_content_shell == true %}
+    </div>
+    {% endif %}
+
+    {% assign resolved_footer_report_enabled = page.footer_report_enabled %}
+    {% if resolved_footer_report_enabled == nil %}
+      {% if page.footer_report_tool_title %}
+        {% assign resolved_footer_report_enabled = true %}
+      {% elsif page.project == 'stat-tools' %}
+        {% assign resolved_footer_report_enabled = true %}
+      {% else %}
+        {% assign resolved_footer_report_enabled = false %}
+      {% endif %}
+    {% endif %}
+    {% assign resolved_footer_report_tool_title = page.footer_report_tool_title %}
+    {% if resolved_footer_report_enabled and resolved_footer_report_tool_title == nil %}
+      {% assign resolved_footer_report_tool_title = page.header_title %}
+    {% endif %}
+
+    {% if page.footer_credits_html or page.footer_extra_top_html or resolved_footer_report_enabled %}
+      {% assign resolved_footer_credits_html = page.footer_credits_html %}
+      {% if resolved_footer_credits_html == nil and page.footer_default_tool_author != false %}
+        {% assign resolved_footer_credits_html = '<p data-tool-author></p>' %}
+      {% endif %}
+      {% capture compact_footer_extra_top %}
+        {{ page.footer_extra_top_html }}
+      {% endcapture %}
+      {% capture compact_footer_credits %}
+        {{ resolved_footer_credits_html }}
+      {% endcapture %}
+      {% include tool_footer.html
+        extra_top=compact_footer_extra_top
+        related_contextual=page.footer_related_contextual
+        credits=compact_footer_credits
+        report_tool_title=resolved_footer_report_tool_title
+        report_label=page.footer_report_label
+        report_label_i18n_key=page.footer_report_label_i18n_key
+      %}
+    {% endif %}
+
+    {% if resolved_shared_scripts_project %}
+      {% assign resolved_shared_scripts_current_path = page.shared_scripts_current_path | default: page.url %}
+      {% assign resolved_shared_scripts_tool_name = page.shared_scripts_tool_name | default: resolved_tool_name %}
+      {% include tool_shared_scripts.html
+        project=resolved_shared_scripts_project
+        current_path=resolved_shared_scripts_current_path
+        tool_name=resolved_shared_scripts_tool_name
+        show_back_button=page.shared_scripts_show_back_button
+        back_label_en=page.shared_scripts_back_label_en
+        back_label_es=page.shared_scripts_back_label_es
+      %}
+    {% endif %}
+
+    {{ page.extra_body_html }}
+
+    {% assign compact_js_assets = page.custom_js | arrayify %}
+    {% for jsfile in compact_js_assets %}
+      <script src="{{ jsfile }}"></script>
+    {% endfor %}
+  {% else %}
+    {% if tool_document_parts.size > 1 %}
+      {{ tool_document_parts | last }}
+    {% else %}
+      {{ content }}
+    {% endif %}
+  {% endif %}
+</body>
+</html>

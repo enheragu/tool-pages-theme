@@ -1,0 +1,35 @@
+/* Shared CV navigation primitives */
+
+.mini-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--border, var(--clr-border));
+  flex-wrap: wrap;
+}
+
+.mini-nav a {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: var(--txt-sm);
+  padding: 3px 10px;
+  border-radius: 3px;
+  background: var(--bg-tertiary, var(--clr-chart-bg));
+  border: 1px solid var(--border, var(--clr-border));
+  color: var(--accent, var(--clr-primary));
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.mini-nav a:hover {
+  background: var(--border, var(--clr-border));
+  color: var(--accent-hover, var(--clr-primary-h));
+}
+
+.mini-nav-sep {
+  color: var(--text-muted, var(--clr-muted));
+  font-size: var(--txt-sm);
+  user-select: none;
+}

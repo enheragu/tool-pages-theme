@@ -1,0 +1,60 @@
+{% assign shared_base = site.shared_assets_base | default: '/assets/shared' %}
+{% assign stat_tools_base = site.stat_tools_base | default: '/stat-tools' %}
+{% if include.project == 'harris' %}
+<script src="{{ shared_base }}/ui-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/ui-core.js';"></script>
+<script src="{{ shared_base }}/i18n-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/i18n-core.js';"></script>
+<script>
+  (function () {
+    if (!window.SharedUiCore) return;
+    if (typeof window.SharedUiCore.ensureThemeToggleMarkup === 'function') {
+      window.SharedUiCore.ensureThemeToggleMarkup({ hostSelector: '[data-theme-toggle-host]' });
+    }
+    if (typeof window.SharedUiCore.ensureLangSwitcherMarkup === 'function') {
+      window.SharedUiCore.ensureLangSwitcherMarkup({ hostSelector: '[data-lang-switcher-host]', switcherId: 'lang-switcher' });
+    }
+  })();
+</script>
+<script src="{{ shared_base }}/related-work.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/related-work.js';"></script>
+{% else %}
+<script src="{{ shared_base }}/chart-interactions.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-interactions.js';"></script>
+<script src="{{ shared_base }}/publication-ui.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/publication-ui.js';"></script>
+<script src="{{ shared_base }}/related-work.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/related-work.js';"></script>
+<script>
+  {% assign resolved_current_path = include.current_path | default: page.url | default: '/' %}
+  {% assign current_path_last = resolved_current_path | slice: -1, 1 %}
+  {% if current_path_last != '/' %}
+    {% assign resolved_current_path = resolved_current_path | append: '/' %}
+  {% endif %}
+  {% assign resolved_tool_name = include.tool_name | default: page.tool_name | default: 'Stat Tools' %}
+  window.StatToolsNavPageConfig = {
+    currentPath: '{{ resolved_current_path }}',
+    {% if include.show_back_button != nil %}
+    showBackButton: {{ include.show_back_button | jsonify }},
+    {% endif %}
+    {% if include.back_label_en or include.back_label_es or include.tool_name or page.tool_name %}
+    backLabel: {
+      en: '{{ include.back_label_en | default: "Back to " | append: resolved_tool_name }}',
+      es: '{{ include.back_label_es | default: "Volver a " | append: resolved_tool_name }}'
+    },
+    {% endif %}
+  };
+</script>
+<script src="{{ stat_tools_base }}/assets/tools-nav-config.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/stat-tools/assets/tools-nav-config.js';"></script>
+<script src="{{ shared_base }}/ui-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/ui-core.js';"></script>
+<script src="{{ shared_base }}/i18n-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/i18n-core.js';"></script>
+<script>
+  (function () {
+    if (!window.SharedUiCore) return;
+    if (typeof window.SharedUiCore.ensureThemeToggleMarkup === 'function') {
+      window.SharedUiCore.ensureThemeToggleMarkup({ hostSelector: '[data-theme-toggle-host]' });
+    }
+    if (typeof window.SharedUiCore.ensureLangSwitcherMarkup === 'function') {
+      window.SharedUiCore.ensureLangSwitcherMarkup({ hostSelector: '[data-lang-switcher-host]', switcherId: 'lang-switcher' });
+    }
+  })();
+</script>
+<script src="{{ stat_tools_base }}/assets/stat-tools-page-utils.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/stat-tools/assets/stat-tools-page-utils.js';"></script>
+<script src="{{ shared_base }}/shared-footer.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/shared-footer.js';"></script>
+<script src="{{ shared_base }}/tools-nav.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tools-nav.js';"></script>
+<script src="{{ shared_base }}/tool-shell/page-shell-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tool-shell/page-shell-core.js';"></script>
+{% endif %}
