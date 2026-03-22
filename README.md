@@ -26,5 +26,5 @@ remote_theme: enheragu/tool-pages-theme
 Then in pages (with front matter enabled):
 
 ```liquid
-{% include stat_tools_head_meta.html ... %}
+{% include tools_head_meta.html ... %}
 ```
