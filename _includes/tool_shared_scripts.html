@@ -1,6 +1,5 @@
 {% assign shared_base = site.shared_assets_base | default: '/assets/shared' %}
-{% assign tools_base = site.baseurl | default: '/stat-tools' %}
-{% if include.project == 'harris' or include.project == 'fusion' %}
+{% assign tools_base = site.tools_base | default: site.baseurl | default: '' %}
 <script src="{{ shared_base }}/ui-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/ui-core.js';"></script>
 <script src="{{ shared_base }}/i18n-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/i18n-core.js';"></script>
 <script>
@@ -14,24 +13,26 @@
     }
   })();
 </script>
+{% if page.with_tabs %}
 <script src="{{ shared_base }}/tabs.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tabs.js';"></script>
+{% endif %}
+{% if page.with_image_card %}
 <script src="{{ shared_base }}/image-card.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/image-card.js';"></script>
-{% if include.project == 'fusion' %}
+{% endif %}
+{% if page.with_chart_interactions %}
 <script src="{{ shared_base }}/chart-interactions.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-interactions.js';"></script>
 {% endif %}
-<script src="{{ shared_base }}/related-work.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/related-work.js';"></script>
-<script src="{{ shared_base }}/shared-footer.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/shared-footer.js';"></script>
-<script src="{{ shared_base }}/tool-shell/page-shell-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tool-shell/page-shell-core.js';"></script>
-{% else %}
-<script src="{{ shared_base }}/chart-interactions.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-interactions.js';"></script>
 {% if page.with_histogram_chart %}
 <script src="{{ shared_base }}/histogram-normal-chart.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/histogram-normal-chart.js';"></script>
 {% endif %}
 {% if page.with_chart_legend %}
 <script src="{{ shared_base }}/chart-legend.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-legend.js';"></script>
 {% endif %}
+{% if page.with_publication_ui %}
 <script src="{{ shared_base }}/publication-ui.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/publication-ui.js';"></script>
+{% endif %}
 <script src="{{ shared_base }}/related-work.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/related-work.js';"></script>
+{% if page.with_tools_nav %}
 <script>
   {% assign resolved_current_path = include.current_path | default: page.url | default: '/' %}
   {% assign current_path_last = resolved_current_path | slice: -1, 1 %}
@@ -52,22 +53,9 @@
     {% endif %}
   };
 </script>
-<script src="{{ tools_base }}/assets/tools-nav-config.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/stat-tools/assets/tools-nav-config.js';"></script>
-<script src="{{ shared_base }}/ui-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/ui-core.js';"></script>
-<script src="{{ shared_base }}/i18n-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/i18n-core.js';"></script>
-<script>
-  (function () {
-    if (!window.SharedUiCore) return;
-    if (typeof window.SharedUiCore.ensureThemeToggleMarkup === 'function') {
-      window.SharedUiCore.ensureThemeToggleMarkup({ hostSelector: '[data-theme-toggle-host]' });
-    }
-    if (typeof window.SharedUiCore.ensureLangSwitcherMarkup === 'function') {
-      window.SharedUiCore.ensureLangSwitcherMarkup({ hostSelector: '[data-lang-switcher-host]', switcherId: 'lang-switcher' });
-    }
-  })();
-</script>
-<script src="{{ tools_base }}/assets/stat-tools-page-utils.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/stat-tools/assets/stat-tools-page-utils.js';"></script>
-<script src="{{ shared_base }}/shared-footer.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/shared-footer.js';"></script>
+<script src="{{ tools_base }}/assets/tools-nav-config.js" onerror="this.onerror=null;this.src='https://enheragu.github.io{{ tools_base }}/assets/tools-nav-config.js';"></script>
+<script src="{{ tools_base }}/assets/stat-tools-page-utils.js" onerror="this.onerror=null;this.src='https://enheragu.github.io{{ tools_base }}/assets/stat-tools-page-utils.js';"></script>
 <script src="{{ shared_base }}/tools-nav.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tools-nav.js';"></script>
-<script src="{{ shared_base }}/tool-shell/page-shell-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tool-shell/page-shell-core.js';"></script>
 {% endif %}
+<script src="{{ shared_base }}/shared-footer.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/shared-footer.js';"></script>
+<script src="{{ shared_base }}/tool-shell/page-shell-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tool-shell/page-shell-core.js';"></script>
