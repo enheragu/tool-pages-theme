@@ -1,0 +1,25 @@
+{% comment %}
+  Shared tabbed content box widget (shared-tabbed-shell-strip style).
+
+  Required params:
+    tabs      – captured HTML string: <button class="shared-tab" role="tab" ...> elements
+    content   – captured HTML string: tab panel content
+
+  Optional params:
+    tablist_id  – id for the tablist element
+    aria_label  – aria-label for the tablist
+    id          – id for the outer element
+    tag         – outer element tag (default: section)
+    class       – extra CSS class(es) on the outer element
+    fill        – if truthy, add shared-tablist-fill to tablist (full-width tabs)
+{% endcomment %}
+{% assign _tb_tablist_cls = 'shared-tablist shared-tablist-joined' %}
+{% if include.fill %} {% assign _tb_tablist_cls = _tb_tablist_cls | append: ' shared-tablist-fill' %} {% endif %}
+<{{ include.tag | default: 'section' }}{% if include.id %} id="{{ include.id }}"{% endif %} class="shared-tabbed-stack shared-tabbed-shell shared-tabbed-shell-strip{% if include.class %} {{ include.class }}{% endif %}">
+  <div{% if include.tablist_id %} id="{{ include.tablist_id }}"{% endif %} class="{{ _tb_tablist_cls }}" role="tablist"{% if include.aria_label %} aria-label="{{ include.aria_label }}"{% endif %}>
+    {{ include.tabs }}
+  </div>
+  <div class="shared-tabbed-panel">
+    {{ include.content }}
+  </div>
+</{{ include.tag | default: 'section' }}>

@@ -1,4 +1,17 @@
 (function () {
+  function isInsideChartArea(event, chart, canvas) {
+    if (!event || !chart || !chart.chartArea || !canvas) return false;
+    var area = chart.chartArea;
+    var rect = canvas.getBoundingClientRect();
+    if (!(rect.width > 0 && rect.height > 0)) return false;
+    var clientX = Number(event.clientX);
+    var clientY = Number(event.clientY);
+    if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) return false;
+    var x = (clientX - rect.left) * (canvas.width / rect.width);
+    var y = (clientY - rect.top) * (canvas.height / rect.height);
+    return x >= area.left && x <= area.right && y >= area.top && y <= area.bottom;
+  }
+
   function touchDistance(a, b) {
     const dx = a.clientX - b.clientX;
     const dy = a.clientY - b.clientY;
@@ -51,6 +64,66 @@
     return { min: nextMin, max: nextMax };
   }
 
+  function interpolateNumericLabels(labels, rawIndex) {
+    if (!Array.isArray(labels) || !labels.length) return NaN;
+    const last = labels.length - 1;
+    const index = Math.max(0, Math.min(last, Number(rawIndex)));
+    const lo = Math.floor(index);
+    const hi = Math.min(last, Math.ceil(index));
+    const loVal = Number(labels[lo]);
+    const hiVal = Number(labels[hi]);
+    if (!Number.isFinite(loVal) || !Number.isFinite(hiVal)) return NaN;
+    if (hi === lo) return loVal;
+    const t = index - lo;
+    return loVal + (hiVal - loVal) * t;
+  }
+
+  function estimateLocalStep(labels, rawIndex) {
+    if (!Array.isArray(labels) || labels.length < 2) return NaN;
+    const last = labels.length - 1;
+    const index = Math.max(0, Math.min(last, Number(rawIndex)));
+    const i = Math.floor(index);
+    const prev = Math.max(0, i - 1);
+    const next = Math.min(last, i + 1);
+
+    const left = Number(labels[i]) - Number(labels[prev]);
+    const right = Number(labels[next]) - Number(labels[i]);
+
+    if (Number.isFinite(left) && Math.abs(left) > 0 && Number.isFinite(right) && Math.abs(right) > 0) {
+      return (Math.abs(left) + Math.abs(right)) * 0.5;
+    }
+    if (Number.isFinite(right) && Math.abs(right) > 0) return Math.abs(right);
+    if (Number.isFinite(left) && Math.abs(left) > 0) return Math.abs(left);
+    return NaN;
+  }
+
+  function syncLinkedXAxis(chart, sourceAxisId, targetAxisId) {
+    const sourceId = String(sourceAxisId || 'x');
+    const targetId = String(targetAxisId || 'xLine');
+    if (!chart || !chart.options || !chart.options.scales) return;
+
+    const sourceScale = chart.scales?.[sourceId];
+    const targetScaleCfg = chart.options.scales[targetId];
+    if (!sourceScale || sourceScale.type !== 'category' || !targetScaleCfg) return;
+
+    const labels = chart.data?.labels;
+    const centerMin = interpolateNumericLabels(labels, sourceScale.min);
+    const centerMax = interpolateNumericLabels(labels, sourceScale.max);
+    if (!Number.isFinite(centerMin) || !Number.isFinite(centerMax) || centerMax <= centerMin) return;
+
+    const stepMin = estimateLocalStep(labels, sourceScale.min);
+    const stepMax = estimateLocalStep(labels, sourceScale.max);
+    const halfMin = Number.isFinite(stepMin) && stepMin > 0 ? stepMin * 0.5 : 0;
+    const halfMax = Number.isFinite(stepMax) && stepMax > 0 ? stepMax * 0.5 : 0;
+
+    const nextMin = centerMin - halfMin;
+    const nextMax = centerMax + halfMax;
+    if (!Number.isFinite(nextMin) || !Number.isFinite(nextMax) || nextMax <= nextMin) return;
+
+    targetScaleCfg.min = nextMin;
+    targetScaleCfg.max = nextMax;
+  }
+
   function attach(options) {
     const { canvas, getChart, defaults, onActivate } = options || {};
     if (!canvas || typeof getChart !== 'function') return;
@@ -78,9 +151,16 @@
         chart.options.scales.x.min = defaults.xMin;
         chart.options.scales.x.max = defaults.xMax;
       }
+      if (chart.options.scales?.xLine && Number.isFinite(defaults.xLineMin) && Number.isFinite(defaults.xLineMax)) {
+        chart.options.scales.xLine.min = defaults.xLineMin;
+        chart.options.scales.xLine.max = defaults.xLineMax;
+      }
       if (defaults.mode !== 'x' && chart.options.scales?.y && Number.isFinite(defaults.yMin) && Number.isFinite(defaults.yMax)) {
         chart.options.scales.y.min = defaults.yMin;
         chart.options.scales.y.max = defaults.yMax;
+      }
+      if (!(Number.isFinite(defaults.xLineMin) && Number.isFinite(defaults.xLineMax))) {
+        syncLinkedXAxis(chart, defaults.linkedXSourceAxisId, defaults.linkedXTargetAxisId);
       }
       chart.update('none');
     };
@@ -97,6 +177,7 @@
         const nextX = clampedPanRange(Number(xScale.min) + dValX, Number(xScale.max) + dValX, defaults?.xMin, defaults?.xMax);
         chart.options.scales.x.min = nextX.min;
         chart.options.scales.x.max = nextX.max;
+        syncLinkedXAxis(chart, defaults?.linkedXSourceAxisId, defaults?.linkedXTargetAxisId);
       }
 
       if (defaults?.mode !== 'x' && yScale) {
@@ -125,6 +206,7 @@
         const nextX = nextScaleRange(xScale, factor, e.offsetX, defaults?.xMin, defaults?.xMax);
         chart.options.scales.x.min = nextX.min;
         chart.options.scales.x.max = nextX.max;
+        syncLinkedXAxis(chart, defaults?.linkedXSourceAxisId, defaults?.linkedXTargetAxisId);
       }
       if (defaults?.mode !== 'x' && yScale) {
         const nextY = nextScaleRange(yScale, factor, e.offsetY, defaults?.yMin, defaults?.yMax);
@@ -178,7 +260,19 @@
         e.preventDefault();
         return;
       }
-      if (typeof onActivate === 'function') onActivate();
+      if (typeof onActivate === 'function') {
+        if (!isInsideChartArea(e, getChart(), canvas)) return;
+        onActivate();
+      }
+    };
+
+    const handleMouseHover = e => {
+      if (mouseDown) return;
+      canvas.style.cursor = isInsideChartArea(e, getChart(), canvas) ? 'zoom-in' : 'default';
+    };
+
+    const handleMouseLeave = () => {
+      if (!mouseDown) canvas.style.cursor = '';
     };
 
     const handleTouchStart = e => {
@@ -223,6 +317,7 @@
         const nextX = nextScaleRange(xScale, factor, centerX, defaults?.xMin, defaults?.xMax);
         chart.options.scales.x.min = nextX.min;
         chart.options.scales.x.max = nextX.max;
+        syncLinkedXAxis(chart, defaults?.linkedXSourceAxisId, defaults?.linkedXTargetAxisId);
 
         if (defaults?.mode !== 'x' && yScale) {
           const centerY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
@@ -262,6 +357,10 @@
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
     canvas.addEventListener('click', handleClick);
+    if (typeof onActivate === 'function') {
+      canvas.addEventListener('mousemove', handleMouseHover);
+      canvas.addEventListener('mouseleave', handleMouseLeave);
+    }
     canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
     canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
     canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
@@ -273,6 +372,8 @@
       handleMouseMove,
       handleMouseUp,
       handleClick,
+      handleMouseHover: typeof onActivate === 'function' ? handleMouseHover : null,
+      handleMouseLeave: typeof onActivate === 'function' ? handleMouseLeave : null,
       handleTouchStart,
       handleTouchMove,
       handleTouchEnd,
@@ -288,6 +389,8 @@
     window.removeEventListener('mousemove', handlers.handleMouseMove);
     window.removeEventListener('mouseup', handlers.handleMouseUp);
     canvas.removeEventListener('click', handlers.handleClick);
+    if (handlers.handleMouseHover) canvas.removeEventListener('mousemove', handlers.handleMouseHover);
+    if (handlers.handleMouseLeave) canvas.removeEventListener('mouseleave', handlers.handleMouseLeave);
     canvas.removeEventListener('touchstart', handlers.handleTouchStart);
     canvas.removeEventListener('touchmove', handlers.handleTouchMove);
     canvas.removeEventListener('touchend', handlers.handleTouchEnd);
@@ -298,8 +401,10 @@
   window.SharedChartInteractions = {
     attach,
     detach,
+    isInsideChartArea,
     touchDistance,
     clampedPanRange,
     nextScaleRange,
+    syncLinkedXAxis,
   };
 })();

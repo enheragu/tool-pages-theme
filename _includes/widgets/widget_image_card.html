@@ -1,0 +1,33 @@
+{% comment %}
+  Shared preview-wrap image card widget.
+
+  Required params:
+    canvas_id     – id for the <canvas> element
+    file_input_id – id for the hidden <input type="file">
+    slot          – value used for data-expand-slot and data-clear-slot
+
+  Optional params:
+    drop_hint_id  – id for the drop-hint <p> (default: canvas_id + '-hint')
+    width         – canvas width attribute (default: 320)
+    height        – canvas height attribute (default: 180)
+    drop_hint     – drop hint text (default: 'Drag & drop or click to choose')
+    accept        – file input accept (default: 'image/*')
+{% endcomment %}
+{% assign _ic_hint_id = include.drop_hint_id | default: include.canvas_id | append: '-hint' %}
+<div class="preview-wrap">
+  <input id="{{ include.file_input_id }}" class="file-input-native sr-only" type="file" accept="{{ include.accept | default: 'image/*' }}">
+  <canvas id="{{ include.canvas_id }}" width="{{ include.width | default: 320 }}" height="{{ include.height | default: 180 }}"></canvas>
+  <div class="preview-actions">
+    <button class="btn-chart-expand btn-preview-icon shared-icon-btn shared-icon-btn-sm shared-icon-btn-accent btn-preview-expand"
+      type="button" data-expand-slot="{{ include.slot }}" aria-label="Expand image" title="Expand"></button>
+    <button class="btn-preview-icon shared-icon-btn shared-icon-btn-sm shared-icon-btn-danger btn-preview-delete"
+      type="button" data-clear-slot="{{ include.slot }}" aria-label="Clear image" title="Clear">
+      <span aria-hidden="true" class="icon-trash">
+        <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+          <path d="M4 7h16M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7m-8 0 1 12.5A1.5 1.5 0 0 0 9.49 21h5.02A1.5 1.5 0 0 0 16 19.5L17 7M10 11v6m4-6v6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+  <p class="drop-overlay" id="{{ _ic_hint_id }}">{{ include.drop_hint | default: 'Drag &amp; drop or click to choose' }}</p>
+</div>

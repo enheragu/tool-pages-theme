@@ -1,6 +1,20 @@
 <footer class="site-footer">
-  {{ include.extra_top }}
-  <section id="related-work-root" class="related-work-root{% if include.related_contextual %} related-work-root-contextual{% endif %}" data-related-contextual="{% if include.related_contextual %}true{% else %}false{% endif %}"></section>
+  {% assign _extra_top_stripped = include.extra_top | strip %}
+  {% if _extra_top_stripped != '' %}
+  <div class="footer-extra-top">
+    {{ include.extra_top }}
+  </div>
+  {% endif %}
+  {% capture related_work_body %}
+    <section id="related-work-root" class="related-work-root{% if include.related_contextual %} related-work-root-contextual{% endif %}" data-related-contextual="{% if include.related_contextual %}true{% else %}false{% endif %}"></section>
+  {% endcapture %}
+  {% include widgets/widget_content_box.html
+    panel_class='intro-panel related-work-shell hidden'
+    title='Citing and related work'
+    title_tone='accent'
+    title_id='related-work-shell-title'
+    body=related_work_body
+  %}
   <div class="footer-credits">
     {{ include.credits }}
   </div>

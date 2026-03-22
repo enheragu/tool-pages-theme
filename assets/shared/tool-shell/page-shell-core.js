@@ -50,7 +50,7 @@
       toolId: rw.toolId,
       lang: options.lang,
       sourceUrl: rw.sourceUrl || '/stat-tools/assets/related-work.json',
-      publicationsSourceUrl: rw.publicationsSourceUrl || '/enheragu_github_web_cv/_data/publications.yml',
+      publicationsSourceUrl: rw.publicationsSourceUrl || '/stat-tools/assets/publications-data.json',
     });
   }
 
@@ -146,6 +146,10 @@
       }
 
       applyRelatedWork({ lang: lang, relatedWork: opts.relatedWork });
+
+      // Reveal body after first translation pass (removes FOUC guard set in tool_head_bootstrap.html).
+      // Subsequent calls on lang-switch are a no-op since the class is already gone.
+      document.documentElement.classList.remove('i18n-pending');
     }
 
     function setLang(nextLang) {
@@ -202,6 +206,7 @@
     applyFooterDefaults(opts);
     ensureHeaderToggleMarkup();
     bindHeaderControls();
+    applyLanguage();
 
     return {
       lang: lang,

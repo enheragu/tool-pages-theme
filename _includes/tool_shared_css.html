@@ -1,5 +1,5 @@
 {% assign shared_base = site.shared_assets_base | default: '/assets/shared' %}
-{% if include.project == 'harris' %}
+{% if include.project == 'harris' or include.project == 'fusion' %}
 <link rel="stylesheet" href="{{ shared_base }}/theme-tokens.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/theme-tokens.css';">
 <link rel="stylesheet" href="{{ shared_base }}/app-shell.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/app-shell.css';">
 <link rel="stylesheet" href="{{ shared_base }}/controls.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/controls.css';">

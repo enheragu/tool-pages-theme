@@ -7,7 +7,7 @@
   font-weight: var(--txt-w-extrabold);
   letter-spacing: var(--txt-tracking-normal);
   color: var(--txt-accent);
-  line-height: 1.1;
+  line-height: var(--txt-lh-heading);
 }
 
 .shared-title-section {

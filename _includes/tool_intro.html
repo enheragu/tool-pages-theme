@@ -1,6 +1,14 @@
 <div class="content-shell">
-  <section class="intro-panel">
-    <h2 class="shared-intro-title"{% if include.title_id %} id="{{ include.title_id }}"{% endif %}{% if include.title_i18n_key %} data-i18n="{{ include.title_i18n_key }}"{% endif %}>{{ include.title }}</h2>
+  {% capture intro_body %}
     <p{% if include.text_id %} id="{{ include.text_id }}"{% endif %}{% if include.text_i18n_key %} data-i18n="{{ include.text_i18n_key }}"{% endif %}{% if include.text_i18n_html_key %} data-i18n-html="{{ include.text_i18n_html_key }}"{% endif %}{% if include.inline_cite %} data-inline-cite{% endif %}>{{ include.text }}</p>
-  </section>
+  {% endcapture %}
+  {% include widgets/widget_content_box.html
+    tag='section'
+    panel_class='intro-panel'
+    title=include.title
+    title_id=include.title_id
+    title_i18n_key=include.title_i18n_key
+    title_tone='accent'
+    body=intro_body
+  %}
 </div>

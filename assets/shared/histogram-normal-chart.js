@@ -20,14 +20,30 @@
       }
     }
     if (c.indexOf('rgb(') === 0) {
-      var inside = c.slice(4, -1);
-      return 'rgba(' + inside + ',' + alpha + ')';
+      var rgbMatch = c.match(/^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+      if (rgbMatch) return 'rgba(' + rgbMatch[1] + ',' + rgbMatch[2] + ',' + rgbMatch[3] + ',' + alpha + ')';
     }
-    if (c.indexOf('rgba(') === 0) return c;
+    if (c.indexOf('rgba(') === 0) {
+      var rgbaMatch = c.match(/^rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)$/i);
+      if (rgbaMatch) return 'rgba(' + rgbaMatch[1] + ',' + rgbaMatch[2] + ',' + rgbaMatch[3] + ',' + alpha + ')';
+    }
     return c;
   }
 
+  function withAlphaAny(color, alpha) {
+    if (Array.isArray(color)) {
+      return color.map(function (item) { return withAlphaAny(item, alpha); });
+    }
+    if (typeof color === 'string') return withAlpha(color, alpha);
+    return color;
+  }
+
   function getTokenPalette() {
+    var sharedLegend = window.SharedChartLegend;
+    if (sharedLegend && typeof sharedLegend.getDataPalette === 'function') {
+      var fromLegend = sharedLegend.getDataPalette();
+      if (Array.isArray(fromLegend) && fromLegend.length) return fromLegend;
+    }
     var style = getComputedStyle(document.documentElement);
     var tokenColors = [
       style.getPropertyValue('--clr-data-blue').trim(),
@@ -126,6 +142,9 @@
       datasets.push({
         type: 'bar',
         label: label,
+        _hnsRole: 'histogram',
+        _hnsGroup: label,
+        _hnsBaseLabel: label,
         data: prop,
         grouped: false,
         backgroundColor: withAlpha(color, 0.42),
@@ -147,6 +166,8 @@
         datasets.push({
           type: 'line',
           label: fitLabelPrefix + ' · ' + label,
+          _hnsRole: 'normal-fit',
+          _hnsGroup: label,
           data: fitData,
           borderColor: withAlpha(color, 0.98),
           borderWidth: 2,
@@ -206,27 +227,6 @@
     var min = Math.min(valuesMin, fitMin);
     var max = Math.max(valuesMax, fitMax);
 
-    var pooled = [];
-    series.forEach(function (s) {
-      var values = Array.isArray(s.values) ? s.values : [];
-      values.forEach(function (v) {
-        if (Number.isFinite(v)) pooled.push(v);
-      });
-    });
-
-    if (pooled.length >= 10) {
-      pooled.sort(function (a, b) { return a - b; });
-      var q01 = quantile(pooled, 0.01);
-      var q99 = quantile(pooled, 0.99);
-      if (Number.isFinite(q01) && Number.isFinite(q99) && q99 > q01) {
-        var qSpan = q99 - q01;
-        var hardMin = q01 - qSpan * 0.7;
-        var hardMax = q99 + qSpan * 0.7;
-        if (Number.isFinite(min)) min = Math.max(min, hardMin);
-        if (Number.isFinite(max)) max = Math.min(max, hardMax);
-      }
-    }
-
     if (!Number.isFinite(min) || !Number.isFinite(max)) {
       min = valuesMin;
       max = valuesMax;
@@ -273,12 +273,18 @@
     return Math.max(14, Math.min(120, bins));
   }
 
+  function resolveFittedStd(values, empiricalStd, width, minStdBinWidthFactor) {
+    var fallbackStd = Math.max(width * Math.max(0, minStdBinWidthFactor), 1e-9);
+    if (Number.isFinite(empiricalStd) && empiricalStd > 0) return empiricalStd;
+    return fallbackStd;
+  }
+
   function createLegendOptions(config) {
     var opts = config || {};
     var normalLabel = opts.normalLabel || 'Fitted normal (dotted line)';
     var sharedLegend = window.SharedChartLegend;
     var baseLabels = sharedLegend && sharedLegend.buildLabels
-      ? sharedLegend.buildLabels({ pointStyle: 'circle', pointStyleWidth: 12, boxSize: 10, padding: 10, lineHeight: 1.2 })
+      ? sharedLegend.buildLabels({ pointStyle: 'circle', pointStyleWidth: 12, boxSize: 10, padding: 10 })
       : {
           color: function () { return getTokenColor('--clr-text', '#3a4658'); },
           boxWidth: 10,
@@ -287,7 +293,7 @@
           pointStyleWidth: 12,
           usePointStyle: true,
           pointStyle: 'circle',
-          font: { lineHeight: 1.2 },
+          font: { lineHeight: 1 },
         };
 
     return {
@@ -316,6 +322,7 @@
                 hidden: !chart.isDatasetVisible(idx),
                 datasetIndex: idx,
                 pointStyle: 'circle',
+                usePointStyle: true,
                 fontColor: legendTextColor,
               });
             }
@@ -336,6 +343,7 @@
               datasetIndex: -1,
               pointStyle: 'line',
               pointStyleWidth: 22,
+              usePointStyle: true,
               fontColor: legendTextColor,
             });
           }
@@ -371,6 +379,111 @@
         });
         chart.update();
       },
+      onHover: function (_evt, item, legend) {
+        var chart = legend && legend.chart;
+        if (!chart || !chart.data || !Array.isArray(chart.data.datasets)) return;
+        var datasets = chart.data.datasets;
+        var targetGroup = null;
+
+        if (item && Number.isFinite(item.datasetIndex) && item.datasetIndex >= 0) {
+          var base = datasets[item.datasetIndex];
+          if (base && base._hnsGroup) targetGroup = base._hnsGroup;
+        } else if (item && item.datasetIndex === -1) {
+          targetGroup = '__all_normals__';
+        }
+        chart._hnsLegendHoverGroup = targetGroup;
+
+        datasets.forEach(function (ds) {
+          if (!ds) return;
+          if (!ds._hnsLegendHoverOriginal) {
+            ds._hnsLegendHoverOriginal = {
+              borderColor: ds.borderColor,
+              backgroundColor: ds.backgroundColor,
+              borderWidth: ds.borderWidth,
+              order: ds.order,
+            };
+          }
+        });
+
+        datasets.forEach(function (ds, datasetIndex) {
+          if (!ds || !ds._hnsLegendHoverOriginal) return;
+          var active = true;
+          if (targetGroup) {
+            if (targetGroup === '__all_normals__') {
+              active = ds._hnsRole === 'normal-fit';
+            } else {
+              active = ds._hnsGroup === targetGroup;
+            }
+          }
+          var orig = ds._hnsLegendHoverOriginal;
+          var inactiveAlpha = 0.08;
+          var activeBarBgAlpha = 0.30;
+          var activeBarBorderAlpha = 0.98;
+
+          if (targetGroup) {
+            if (active) {
+              ds.order = ds._hnsRole === 'normal-fit' ? 40 : 30;
+            } else {
+              ds.order = ds._hnsRole === 'normal-fit' ? 20 : 10;
+            }
+          } else if (typeof orig.order === 'number') {
+            ds.order = orig.order;
+          }
+
+          if (ds._hnsRole === 'histogram') {
+            var nextBorder = active
+              ? withAlphaAny(orig.borderColor, activeBarBorderAlpha)
+              : withAlphaAny(orig.borderColor, inactiveAlpha);
+            var nextBackground = active
+              ? withAlphaAny(orig.backgroundColor, activeBarBgAlpha)
+              : withAlphaAny(orig.backgroundColor, inactiveAlpha);
+            ds.borderColor = nextBorder;
+            ds.backgroundColor = nextBackground;
+
+            var meta = typeof chart.getDatasetMeta === 'function' ? chart.getDatasetMeta(datasetIndex) : null;
+            if (meta && Array.isArray(meta.data)) {
+              meta.data.forEach(function (barEl) {
+                if (!barEl || !barEl.options) return;
+                barEl.options.backgroundColor = nextBackground;
+                barEl.options.borderColor = nextBorder;
+              });
+            }
+          } else {
+            ds.borderColor = active ? withAlphaAny(orig.borderColor, 1) : withAlphaAny(orig.borderColor, inactiveAlpha);
+            ds.backgroundColor = active ? orig.backgroundColor : withAlphaAny(orig.backgroundColor, inactiveAlpha);
+          }
+
+          if (typeof orig.borderWidth === 'number') ds.borderWidth = orig.borderWidth;
+          if (active && typeof orig.borderWidth === 'number') ds.borderWidth = orig.borderWidth + 0.35;
+        });
+
+        chart.update('none');
+      },
+      onLeave: function (_evt, _item, legend) {
+        var chart = legend && legend.chart;
+        if (!chart || !chart.data || !Array.isArray(chart.data.datasets)) return;
+        chart._hnsLegendHoverGroup = null;
+        var datasets = chart.data.datasets;
+        datasets.forEach(function (ds, datasetIndex) {
+          if (!ds || !ds._hnsLegendHoverOriginal) return;
+          ds.borderColor = ds._hnsLegendHoverOriginal.borderColor;
+          ds.backgroundColor = ds._hnsLegendHoverOriginal.backgroundColor;
+          ds.borderWidth = ds._hnsLegendHoverOriginal.borderWidth;
+          ds.order = ds._hnsLegendHoverOriginal.order;
+
+          if (ds._hnsRole === 'histogram') {
+            var meta = typeof chart.getDatasetMeta === 'function' ? chart.getDatasetMeta(datasetIndex) : null;
+            if (meta && Array.isArray(meta.data)) {
+              meta.data.forEach(function (barEl) {
+                if (!barEl || !barEl.options) return;
+                barEl.options.backgroundColor = ds._hnsLegendHoverOriginal.backgroundColor;
+                barEl.options.borderColor = ds._hnsLegendHoverOriginal.borderColor;
+              });
+            }
+          }
+        });
+        chart.update('none');
+      },
     };
   }
 
@@ -381,9 +494,13 @@
     var minStdBinWidthFactor = Number.isFinite(Number(config.minStdBinWidthFactor))
       ? Number(config.minStdBinWidthFactor)
       : 0.22;
-    var normalLineTension = Number.isFinite(Number(config.normalLineTension))
+    var normalLineTensionRaw = Number.isFinite(Number(config.normalLineTension))
       ? Number(config.normalLineTension)
-      : 0.36;
+      : 0.25;
+    var normalLineTension = Math.max(0, Math.min(1, normalLineTensionRaw));
+    var normalLinePoints = Number.isFinite(Number(config.normalLinePoints))
+      ? Math.max(64, Math.round(Number(config.normalLinePoints)))
+      : 2001;
 
     var allValues = [];
     series.forEach(function (s) {
@@ -412,12 +529,9 @@
     series.forEach(function (s, index) {
       var values = Array.isArray(s.values) ? s.values : [];
       if (!values.length) return;
-      var mean = Number(s.mean);
-      var std = Number(s.std);
-      var stdForFit = (Number.isFinite(std) && std > 0)
-        ? std
-        : Math.max(width * Math.max(0, minStdBinWidthFactor), 1e-9);
-      stdForFit = Math.max(stdForFit, width * 0.35);
+      var meanValue = mean(values);
+      var stdValue = stdDev(values, meanValue);
+      var stdForFit = resolveFittedStd(values, stdValue, width, minStdBinWidthFactor);
       var counts = new Array(bins).fill(0);
 
       values.forEach(function (v) {
@@ -427,12 +541,20 @@
         counts[idx] += 1;
       });
 
-      var expected = centers.map(function (_x, i) {
-        var left = min + i * width;
-        var right = left + width;
-        var mass = normalCdf(right, mean, stdForFit) - normalCdf(left, mean, stdForFit);
-        return values.length * Math.max(0, mass);
-      });
+      var lineData = [];
+      if (normalLinePoints <= 1) {
+        var xOnly = min + 0.5 * (max - min);
+        var xOnlyIndex = (xOnly - min) / width - 0.5;
+        lineData.push({ x: xOnlyIndex, y: values.length * width * normalPdf(xOnly, meanValue, stdForFit) });
+      } else {
+        for (var p = 0; p < normalLinePoints; p += 1) {
+          var t = p / (normalLinePoints - 1);
+          var xVal = min + (max - min) * t;
+          var xIndex = (xVal - min) / width - 0.5;
+          var yVal = values.length * width * normalPdf(xVal, meanValue, stdForFit);
+          lineData.push({ x: xIndex, y: yVal });
+        }
+      }
 
       var color = palette[index % palette.length];
       var labelBase = s.label || ('Series ' + (index + 1));
@@ -459,19 +581,83 @@
         _hnsRole: 'normal-fit',
         _hnsGroup: labelBase,
         _hnsBaseLabel: labelBase,
-        data: expected,
+        xAxisID: 'x',
+        parsing: false,
+        data: lineData,
         pointRadius: 0,
         pointHoverRadius: 0,
         borderWidth: 2,
         borderDash: [7, 4],
         borderColor: withAlpha(color, 0.95),
         tension: normalLineTension,
-        cubicInterpolationMode: 'monotone',
+        spanGaps: true,
         order: 2,
       });
     });
 
     return { labels: labels, datasets: datasets };
+  }
+
+  function createContinuousHistogramChart(config) {
+    var cfg = config || {};
+    var canvas = cfg.canvas;
+    var series = Array.isArray(cfg.series) ? cfg.series : [];
+    if (!canvas || !window.Chart || !series.length) return null;
+
+    var legendHelper = window.SharedChartLegend;
+    if (!legendHelper) return null;
+
+    var chartData = buildContinuousDatasets({
+      series: series,
+      sigmaExtent: cfg.sigmaExtent,
+      rangePaddingFraction: cfg.rangePaddingFraction,
+      minStdBinWidthFactor: cfg.minStdBinWidthFactor,
+      normalLineTension: cfg.normalLineTension,
+      normalLinePoints: cfg.normalLinePoints,
+      bins: cfg.bins,
+    });
+    if (!chartData) return null;
+
+    var chartTheme = legendHelper.getChartTheme();
+    var legendOptions = createLegendOptions({ normalLabel: cfg.normalLabel });
+    legendOptions = legendOptions || { display: true };
+    legendOptions.labels = Object.assign({}, legendOptions.labels || {}, {
+      usePointStyle: true,
+      pointStyle: 'circle',
+      boxWidth: 8,
+      boxHeight: 8,
+      padding: 14,
+    });
+
+    var xTickCallback = typeof cfg.xTickCallback === 'function' ? cfg.xTickCallback : undefined;
+
+    return new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: chartData.labels,
+        datasets: chartData.datasets
+      },
+      options: legendHelper.buildChartOptions({
+        theme: chartTheme,
+        plugins: { legend: legendOptions },
+        scales: {
+          x: {
+            title: { display: true, text: cfg.xTitle || '', color: chartTheme.text },
+            offset: true,
+            ticks: Object.assign({ color: chartTheme.text, autoSkip: true, maxTicksLimit: 12 }, xTickCallback ? { callback: xTickCallback } : {}),
+            grid: { color: chartTheme.grid },
+            border: { color: chartTheme.grid }
+          },
+          y: {
+            title: { display: true, text: cfg.yTitle || 'count', color: chartTheme.text },
+            ticks: { color: chartTheme.text },
+            grid: { color: chartTheme.grid },
+            border: { color: chartTheme.grid },
+            beginAtZero: true,
+          }
+        }
+      })
+    });
   }
 
   window.SharedHistogramNormalChart = {
@@ -481,5 +667,6 @@
     suggestBinCount: suggestBinCount,
     buildDiscreteHistogramDatasets: buildDiscreteHistogramDatasets,
     buildContinuousDatasets: buildContinuousDatasets,
+    createContinuousHistogramChart: createContinuousHistogramChart,
   };
 })();

@@ -244,11 +244,11 @@ body.dark .lang-btn:not(.active) {
 }
 
 .flag-gb {
-  background-image: url('/assets/shared/flags/gb.svg');
+  background-image: url('./flags/gb.svg');
 }
 
 .flag-es {
-  background-image: url('/assets/shared/flags/es.svg');
+  background-image: url('./flags/es.svg');
 }
 
 .lang-btn.active .flag-icon,

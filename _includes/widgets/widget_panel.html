@@ -2,8 +2,14 @@
 {% assign panel_class = include.panel_class | default: 'panel card' %}
 {% assign title_tag = include.title_tag | default: 'h3' %}
 {% assign title_class = include.title_class | default: 'shared-card-title' %}
-{% assign is_collapsible = include.collapsible | default: false, allow_false: true %}
-{% assign open_raw = include.open | default: true, allow_false: true %}
+{% assign is_collapsible = include.collapsible %}
+{% if is_collapsible == nil %}
+  {% assign is_collapsible = false %}
+{% endif %}
+{% assign open_raw = include.open %}
+{% if open_raw == nil %}
+  {% assign open_raw = true %}
+{% endif %}
 {% assign open_token = open_raw | append: '' | downcase %}
 {% assign is_open = true %}
 {% if open_raw == false or open_token == 'false' or open_token == '0' or open_token == 'no' or open_token == 'off' %}
@@ -30,11 +36,22 @@
 </details>
 {% else %}
 <{{ panel_tag }}{% if include.panel_id %} id="{{ include.panel_id }}"{% endif %} class="{{ panel_class }}">
+  {% if include.header_class %}
+  <div class="{{ include.header_class }}">
+    {% if include.title %}
+    <{{ title_tag }}{% if include.title_id %} id="{{ include.title_id }}"{% endif %} class="{{ title_class }}"{% if include.title_i18n_key %} data-i18n="{{ include.title_i18n_key }}"{% endif %}>{{ include.title }}</{{ title_tag }}>
+    {% endif %}
+    {% if include.header_extra %}
+    {{ include.header_extra }}
+    {% endif %}
+  </div>
+  {% else %}
   {% if include.title %}
   <{{ title_tag }}{% if include.title_id %} id="{{ include.title_id }}"{% endif %} class="{{ title_class }}"{% if include.title_i18n_key %} data-i18n="{{ include.title_i18n_key }}"{% endif %}>{{ include.title }}</{{ title_tag }}>
   {% endif %}
   {% if include.header_extra %}
   {{ include.header_extra }}
+  {% endif %}
   {% endif %}
   {% if include.body_class %}
   <div class="{{ include.body_class }}">

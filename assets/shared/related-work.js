@@ -5,9 +5,56 @@
   var LOCAL_JEKYLL_SOURCE = 'http://127.0.0.1:4000/assets/shared/related-work.json';
   var FALLBACK_SOURCE = 'https://enheragu.github.io/tool-pages-theme/assets/shared/related-work.json';
   var DEFAULT_PUBLICATIONS_SOURCE = 'https://raw.githubusercontent.com/enheragu/enheragu.github.io/main/_data/publications.yml';
-  var LOCAL_PUBLICATIONS_SOURCE = '/enheragu_github_web_cv/_data/publications.yml';
-  var JEKYLL_PUBLICATIONS_SOURCE = 'http://127.0.0.1:4000/_data/publications.yml';
+  var LOCAL_PUBLICATIONS_SOURCE = '/stat-tools/assets/publications-data.json';
   var EMPTY_DATASET = { tools: {}, publications: [] };
+
+  function extractGitHubRepoSlug(url) {
+    var href = String(url || '').trim();
+    if (!href) return '';
+    var m = href.match(/^https?:\/\/github\.com\/([^\/\s]+)\/([^\/\s?#]+)(?:[\/\s?#].*)?$/i);
+    if (!m) return '';
+    return m[1] + '/' + m[2];
+  }
+
+  function ensureSharedRepoCards() {
+    if (window.SharedRepoCards && typeof window.SharedRepoCards.getRepoInfo === 'function') {
+      return Promise.resolve(window.SharedRepoCards);
+    }
+
+    if (window.__sharedRepoCardsLoaderPromise) {
+      return window.__sharedRepoCardsLoaderPromise;
+    }
+
+    window.__sharedRepoCardsLoaderPromise = new Promise(function (resolve) {
+      if (window.SharedRepoCards && typeof window.SharedRepoCards.getRepoInfo === 'function') {
+        resolve(window.SharedRepoCards);
+        return;
+      }
+
+      var existing = document.querySelector('script[data-shared-repo-cards]');
+      if (existing) {
+        existing.addEventListener('load', function () { resolve(window.SharedRepoCards || null); }, { once: true });
+        existing.addEventListener('error', function () { resolve(null); }, { once: true });
+        return;
+      }
+
+      var script = document.createElement('script');
+      script.src = '/assets/shared/repo-cards.js';
+      script.setAttribute('data-shared-repo-cards', '1');
+      script.onload = function () { resolve(window.SharedRepoCards || null); };
+      script.onerror = function () {
+        script.onerror = function () {
+          script.onerror = null;
+          resolve(null);
+        };
+        script.onload = function () { resolve(window.SharedRepoCards || null); };
+        script.src = 'https://enheragu.github.io/tool-pages-theme/assets/shared/repo-cards.js';
+      };
+      document.head.appendChild(script);
+    });
+
+    return window.__sharedRepoCardsLoaderPromise;
+  }
 
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -83,19 +130,18 @@
     var sources = [];
     var inputSource = sourceUrl;
 
-    // In local tool previews, Jekyll _data is not served as a static HTTP file.
-    // Normalize that legacy path to a reachable source to avoid repeated 404 noise.
-    if (typeof inputSource === 'string' && /\/enheragu_github_web_cv\/_data\/publications\.yml$/.test(inputSource)) {
-      inputSource = DEFAULT_PUBLICATIONS_SOURCE;
+    // Legacy: _data paths are not served by Jekyll over HTTP. Skip them silently.
+    if (typeof inputSource === 'string' && /\/_data\/publications\.yml$/.test(inputSource)) {
+      inputSource = null;
+    }
+
+    // On localhost, try the locally-served asset first (symlinked from the CV data).
+    var isLocalHost = /^(127\.0\.0\.1|localhost)$/.test(window.location.hostname || '');
+    if (isLocalHost && inputSource !== LOCAL_PUBLICATIONS_SOURCE) {
+      sources.push(LOCAL_PUBLICATIONS_SOURCE);
     }
 
     if (inputSource) sources.push(inputSource);
-
-    var isLocalHost = /^(127\.0\.0\.1|localhost)$/.test(window.location.hostname || '');
-    if (isLocalHost) {
-      // Do not probe Jekyll _data over HTTP here: most local tool previews do not expose it.
-      // Keep a reachable fallback source to avoid repeated 404 spam in the server log.
-    }
     sources.push(DEFAULT_PUBLICATIONS_SOURCE);
 
     return sources.filter(function (value, index, self) {
@@ -175,7 +221,7 @@
     return categories;
   }
 
-  function loadPublicationsFromYaml(sourceUrl) {
+  function loadPublications(sourceUrl) {
     var sources = candidatePublicationSources(sourceUrl);
     var index = 0;
 
@@ -184,6 +230,14 @@
         return Promise.resolve([]);
       }
       var current = sources[index++];
+      if (/\.json$/i.test(current)) {
+        return fetchJson(current)
+          .then(function (data) {
+            if (Array.isArray(data) && data.length) return data;
+            return attempt();
+          })
+          .catch(attempt);
+      }
       return fetchText(current)
         .then(parsePublicationsYaml)
         .catch(attempt);
@@ -316,6 +370,65 @@
       venueHtml +
       actionsHtml +
       '</li>';
+  }
+
+  function renderRepoRelatedItem(entry, lang) {
+    var locale = (lang === 'es') ? 'es' : 'en';
+    var href = String(entry && entry.url ? entry.url : '#');
+    var slug = extractGitHubRepoSlug(href);
+    var fallbackLabel = slug ? (slug.split('/')[1] || slug) : 'repository';
+    var label = String(entry && entry.label ? entry.label : fallbackLabel);
+    var descriptionOverride = pickLangText(entry && entry.description_override, locale, '');
+    var descriptionFallback = pickLangText(entry && entry.description, locale, '');
+    var badgeText = locale === 'es' ? 'Repositorio' : 'Repository';
+
+    var descText = descriptionOverride || descriptionFallback;
+    var descHtml = descText
+      ? '<span class="related-work-link-desc"> — ' + escapeHtml(descText) + '</span>'
+      : '<span class="related-work-link-desc" data-related-repo-desc> — ' + (locale === 'es' ? 'Cargando descripción…' : 'Loading description...') + '</span>';
+
+    var key = entry && entry.key ? String(entry.key).trim() : '';
+    var keyAttr = key ? (' data-pub-key="' + escapeHtml(key) + '"') : '';
+    var slugAttr = slug ? (' data-related-repo="' + escapeHtml(slug) + '"') : '';
+    var noFetchAttr = descriptionOverride ? ' data-related-repo-no-fetch="1"' : '';
+    var fallbackAttr = descriptionFallback ? (' data-related-repo-fallback="' + escapeHtml(descriptionFallback) + '"') : '';
+    var linkBadge = href && href !== '#'
+      ? ' <a class="related-work-inline-link link-badge" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">[link]</a>'
+      : '';
+
+    return '' +
+      '<li class="related-work-item related-work-item-pub related-work-item-repo"' + keyAttr + slugAttr + noFetchAttr + fallbackAttr + '>' +
+      '<span class="related-work-type-badge">' + escapeHtml(badgeText) + '</span>' +
+      '<strong>' + escapeHtml(label) + '</strong>' +
+      linkBadge +
+      descHtml +
+      '</li>';
+  }
+
+  function hydrateRepoRelatedItems(container, lang) {
+    var locale = (lang === 'es') ? 'es' : 'en';
+    var rows = Array.prototype.slice.call(container.querySelectorAll('[data-related-repo]'));
+    rows.forEach(function (row) {
+      if (!row || row.getAttribute('data-related-repo-no-fetch') === '1') return;
+      var slug = String(row.getAttribute('data-related-repo') || '').trim();
+      if (!slug) return;
+      var descNode = row.querySelector('[data-related-repo-desc], .related-work-link-desc');
+      if (!descNode) return;
+
+      ensureSharedRepoCards().then(function (api) {
+        if (!api || typeof api.getRepoInfo !== 'function') return null;
+        return api.getRepoInfo(slug);
+      }).then(function (info) {
+        var fallback = String(row.getAttribute('data-related-repo-fallback') || '').trim();
+        var desc = info && info.description ? String(info.description).trim() : '';
+        var text = desc || fallback;
+        if (!text) {
+          descNode.textContent = locale === 'es' ? ' — Sin descripción.' : ' — No description.';
+          return;
+        }
+        descNode.textContent = ' — ' + text;
+      });
+    });
   }
 
   function renderSupportPublicationItem(pub, lang) {
@@ -566,8 +679,12 @@
     var lang = resolveLang(options || {});
     var item = resolveItem(data, toolId);
 
+    var shell = container.closest('.related-work-shell');
+    var shellTitle = shell ? shell.querySelector('[data-related-work-shell-title], #related-work-shell-title') : null;
+
     if (!item) {
       container.innerHTML = '';
+      if (shell) shell.classList.add('hidden');
       return;
     }
 
@@ -620,15 +737,22 @@
 
     if (!links.length && !publications.length && !supportRepoUrl && !supportIntroText && !supportDoiItems && !supportPublications.length) {
       container.innerHTML = '';
+      if (shell) shell.classList.add('hidden');
       return;
     }
 
     var title = pickLangText(item.title, lang, (lang === 'es' ? 'Citas y trabajos relacionados' : 'Citing and related work'));
-    var heading = '<h3 class="related-work-title">' + escapeHtml(title) + '</h3>';
+    if (shellTitle) shellTitle.textContent = title;
+    if (shell) shell.classList.remove('hidden');
 
     var list = links.map(function (entry) {
+      var href = String(entry && entry.url ? entry.url : '#');
+      if (extractGitHubRepoSlug(href)) {
+        return renderRepoRelatedItem(entry, lang);
+      }
+
       var label = escapeHtml(entry && entry.label ? entry.label : 'Related link');
-      var url = escapeHtml(entry && entry.url ? entry.url : '#');
+      var url = escapeHtml(href);
       var desc = pickLangText(entry && entry.description, lang, '');
       var descHtml = desc ? '<span class="related-work-link-desc"> — ' + escapeHtml(desc) + '</span>' : '';
       var key = entry && entry.key ? String(entry.key).trim() : '';
@@ -672,7 +796,8 @@
       ? '<h4 class="related-work-subtitle">' + relatedTitle + '</h4><ul class="related-work-list related-work-list-pubs">' + relatedItemsHtml + '</ul>'
       : '';
 
-    container.innerHTML = '<section class="related-work-block">' + heading + supportBlock + relatedSection + '</section>';
+    container.innerHTML = supportBlock + relatedSection;
+    hydrateRepoRelatedItems(container, lang);
     var anchors = ensurePublicationEntryAnchors(container);
     applyInlineCitations(toolId, lang, anchors.keyToId, anchors.orderedKeys);
     if (window.SharedPublicationUI && typeof window.SharedPublicationUI.bind === 'function') {
@@ -696,7 +821,7 @@
         if (Array.isArray(dataset.publications) && dataset.publications.length) {
           return dataset;
         }
-        return loadPublicationsFromYaml(options.publicationsSourceUrl).then(function (publications) {
+        return loadPublications(options.publicationsSourceUrl).then(function (publications) {
           dataset.publications = Array.isArray(publications) ? publications : [];
           return dataset;
         });

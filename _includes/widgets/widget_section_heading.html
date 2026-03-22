@@ -1,12 +1,12 @@
 {% assign heading_tag = include.tag | default: 'h2' %}
 {% assign emphasis = include.emphasis | default: 'strong' %}
 
-{% if include.heading_class %}
-  {% assign final_class = include.heading_class %}
+{% if include.title_class %}
+  {% assign final_class = include.title_class %}
 {% elsif emphasis == 'subtle' %}
   {% assign final_class = 'shared-card-title' %}
 {% else %}
   {% assign final_class = 'app-section-title' %}
 {% endif %}
 
-<{{ heading_tag }}{% if include.heading_id %} id="{{ include.heading_id }}"{% endif %} class="{{ final_class }}"{% if include.heading_i18n_key %} data-i18n="{{ include.heading_i18n_key }}"{% endif %}>{{ include.text }}</{{ heading_tag }}>
+<{{ heading_tag }}{% if include.title_id %} id="{{ include.title_id }}"{% endif %} class="{{ final_class }}"{% if include.title_i18n_key %} data-i18n="{{ include.title_i18n_key }}"{% endif %}>{{ include.title }}</{{ heading_tag }}>

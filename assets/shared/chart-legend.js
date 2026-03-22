@@ -39,9 +39,84 @@
     };
   }
 
+  function blendHex(color, mixColor, ratio) {
+    var c = String(color || '').trim();
+    var m = String(mixColor || '').trim();
+    if (!/^#[0-9a-f]{6}$/i.test(c) || !/^#[0-9a-f]{6}$/i.test(m)) return c || color;
+    var t = Math.max(0, Math.min(1, Number(ratio)));
+    var cr = parseInt(c.slice(1, 3), 16);
+    var cg = parseInt(c.slice(3, 5), 16);
+    var cb = parseInt(c.slice(5, 7), 16);
+    var mr = parseInt(m.slice(1, 3), 16);
+    var mg = parseInt(m.slice(3, 5), 16);
+    var mb = parseInt(m.slice(5, 7), 16);
+    var rr = Math.round(cr * (1 - t) + mr * t);
+    var rg = Math.round(cg * (1 - t) + mg * t);
+    var rb = Math.round(cb * (1 - t) + mb * t);
+    return '#' + rr.toString(16).padStart(2, '0') + rg.toString(16).padStart(2, '0') + rb.toString(16).padStart(2, '0');
+  }
+
+  function normalizeHex(color) {
+    var c = String(color || '').trim();
+    if (/^#[0-9a-f]{3}$/i.test(c)) {
+      return '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3];
+    }
+    return c;
+  }
+
   function getDataPalette() {
     var colors = getDataColors();
-    return [colors.blue, colors.green, colors.purple, colors.yellow, colors.red, colors.gray, colors.cyan];
+    var base = [colors.blue, colors.green, colors.purple, colors.yellow, colors.red, colors.gray, colors.cyan]
+      .map(normalizeHex)
+      .filter(Boolean);
+
+    var extras = [
+      '#f28e2b',
+      '#59a14f',
+      '#e15759',
+      '#b07aa1',
+      '#76b7b2',
+      '#edc948',
+      '#9c755f',
+      '#ff9da7',
+      '#1f77b4',
+      '#ff7f0e',
+      '#2ca02c',
+      '#d62728',
+      '#9467bd',
+      '#8c564b',
+      '#e377c2',
+      '#17becf',
+      '#bcbd22',
+      '#006d77',
+      '#ef476f',
+      '#118ab2',
+      '#06d6a0',
+      '#ffd166'
+    ];
+
+    var unique = [];
+    function pushUnique(color) {
+      var c = normalizeHex(color);
+      if (!c) return;
+      if (unique.indexOf(c) !== -1) return;
+      unique.push(c);
+    }
+
+    base.forEach(pushUnique);
+    extras.forEach(pushUnique);
+
+    var variants = unique.slice();
+    var lightMix = '#ffffff';
+    var darkMix = '#10141d';
+    var distinctPoolSize = variants.length;
+    for (var i = 0; i < unique.length; i++) {
+      variants.push(blendHex(unique[i], lightMix, 0.22));
+      variants.push(blendHex(unique[i], darkMix, 0.2));
+    }
+
+    var filtered = variants.map(normalizeHex).filter(Boolean);
+    return filtered.slice(0, distinctPoolSize).concat(filtered.slice(distinctPoolSize));
   }
 
   function withAlpha(color, alpha) {
@@ -114,18 +189,19 @@
       : boxSize;
     if (pointStyle === 'circle') pointStyleWidth = boxSize;
     var padding = Number(opts.padding) || 10;
-    var lineHeight = Number(opts.lineHeight) || 1.2;
+    var lineHeight = Number(opts.lineHeight) || 1;
 
-    return {
+    var result = {
       color: function () { return getTokenColor('--clr-text', 'currentColor'); },
       usePointStyle: true,
       pointStyle: pointStyle,
-      pointStyleWidth: pointStyleWidth,
       boxWidth: boxSize,
       boxHeight: boxSize,
       padding: padding,
       font: { size: 11, lineHeight: lineHeight },
     };
+    if (pointStyle !== 'circle') result.pointStyleWidth = pointStyleWidth;
+    return result;
   }
 
   function createLegendOptions(options) {
@@ -143,6 +219,53 @@
 
     if (opts.position) legend.position = opts.position;
     if (typeof opts.onClick === 'function') legend.onClick = opts.onClick;
+
+    function applyLegendHover(chart, activeDatasetIndex) {
+      if (!chart || !chart.data || !Array.isArray(chart.data.datasets)) return;
+      var datasets = chart.data.datasets;
+      var hasActive = Number.isFinite(activeDatasetIndex) && activeDatasetIndex >= 0;
+
+      datasets.forEach(function (ds) {
+        if (!ds) return;
+        if (!ds._legendHoverOriginal) {
+          ds._legendHoverOriginal = {
+            borderColor: ds.borderColor,
+            backgroundColor: ds.backgroundColor,
+            pointBackgroundColor: ds.pointBackgroundColor,
+          };
+        }
+      });
+
+      datasets.forEach(function (ds, idx) {
+        if (!ds || !ds._legendHoverOriginal) return;
+        var active = !hasActive || idx === activeDatasetIndex;
+        var alpha = active ? 1 : 0.22;
+        var orig = ds._legendHoverOriginal;
+
+        if (typeof orig.borderColor === 'string') ds.borderColor = withAlpha(orig.borderColor, alpha);
+        if (typeof orig.backgroundColor === 'string') ds.backgroundColor = withAlpha(orig.backgroundColor, alpha);
+        if (typeof orig.pointBackgroundColor === 'string') ds.pointBackgroundColor = withAlpha(orig.pointBackgroundColor, alpha);
+      });
+
+      chart.update('none');
+    }
+
+    legend.onHover = function (_event, item, legendInstance) {
+      if (typeof opts.onHover === 'function') {
+        opts.onHover(_event, item, legendInstance);
+      }
+      if (!legendInstance || !legendInstance.chart) return;
+      var idx = item && Number.isFinite(item.datasetIndex) ? item.datasetIndex : -1;
+      applyLegendHover(legendInstance.chart, idx);
+    };
+
+    legend.onLeave = function (_event, item, legendInstance) {
+      if (typeof opts.onLeave === 'function') {
+        opts.onLeave(_event, item, legendInstance);
+      }
+      if (!legendInstance || !legendInstance.chart) return;
+      applyLegendHover(legendInstance.chart, -1);
+    };
 
     return legend;
   }
@@ -179,7 +302,7 @@
   }
 
   function getLayoutPadding(overrides) {
-    return Object.assign({ top: 2, right: 8, left: 6, bottom: 12 }, overrides || {});
+    return Object.assign({ top: 3, right: 8, left: 6, bottom: 3 }, overrides || {});
   }
 
   function buildChartOptions(config) {

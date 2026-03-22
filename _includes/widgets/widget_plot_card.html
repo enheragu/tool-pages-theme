@@ -37,4 +37,7 @@
   <div class="chart-wrap">
     <canvas{% if resolved_canvas_id %} id="{{ resolved_canvas_id }}"{% endif %} class="{{ canvas_class }}"></canvas>
   </div>
+  {% if include.footer_extra %}
+  {{ include.footer_extra }}
+  {% endif %}
 </{{ card_tag }}>

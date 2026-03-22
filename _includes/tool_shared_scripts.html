@@ -1,6 +1,6 @@
 {% assign shared_base = site.shared_assets_base | default: '/assets/shared' %}
 {% assign stat_tools_base = site.stat_tools_base | default: '/stat-tools' %}
-{% if include.project == 'harris' %}
+{% if include.project == 'harris' or include.project == 'fusion' %}
 <script src="{{ shared_base }}/ui-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/ui-core.js';"></script>
 <script src="{{ shared_base }}/i18n-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/i18n-core.js';"></script>
 <script>
@@ -14,7 +14,14 @@
     }
   })();
 </script>
+<script src="{{ shared_base }}/tabs.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tabs.js';"></script>
+<script src="{{ shared_base }}/image-card.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/image-card.js';"></script>
+{% if include.project == 'fusion' %}
+<script src="{{ shared_base }}/chart-interactions.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-interactions.js';"></script>
+{% endif %}
 <script src="{{ shared_base }}/related-work.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/related-work.js';"></script>
+<script src="{{ shared_base }}/shared-footer.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/shared-footer.js';"></script>
+<script src="{{ shared_base }}/tool-shell/page-shell-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tool-shell/page-shell-core.js';"></script>
 {% else %}
 <script src="{{ shared_base }}/chart-interactions.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-interactions.js';"></script>
 <script src="{{ shared_base }}/publication-ui.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/publication-ui.js';"></script>

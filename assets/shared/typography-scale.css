@@ -22,6 +22,9 @@
   --txt-w-bold: 700;
   --txt-w-extrabold: 800;
 
+  --txt-lh-none: 1;
+  --txt-lh-heading: 1.1;
+  --txt-lh-compact: 1.2;
   --txt-lh-tight: 1.35;
   --txt-lh-body: 1.5;
   --txt-lh-relaxed: 1.55;

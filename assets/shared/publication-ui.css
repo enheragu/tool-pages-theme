@@ -105,7 +105,7 @@
   color: var(--text-primary, var(--clr-text));
   font-weight: var(--txt-w-semibold);
   font-size: var(--txt-sm);
-  line-height: 1.25;
+  line-height: var(--txt-lh-compact);
   word-break: break-word;
 }
 
@@ -142,7 +142,7 @@
 .link-badge {
   font-family: var(--font-mono);
   font-size: var(--txt-xs);
-  line-height: 1.1;
+  line-height: var(--txt-lh-heading);
   height: 1.2rem;
   padding: 0 6px;
   border-radius: 3px;
@@ -192,7 +192,7 @@
   display: inline-flex;
   cursor: pointer;
   user-select: none;
-  line-height: 1.1;
+  line-height: var(--txt-lh-heading);
   vertical-align: baseline;
   text-decoration: none;
 }
@@ -358,7 +358,7 @@ body.pubui-selection-lock .shared-modal-backdrop {
   justify-content: center;
   text-align: center;
   font-size: var(--txt-base-plus);
-  line-height: 1;
+  line-height: var(--txt-lh-none);
 }
 
 .pub-cite-copy,
@@ -372,7 +372,7 @@ body.pubui-selection-lock .shared-modal-backdrop {
   justify-content: center;
   text-align: center;
   font-size: var(--txt-base-plus);
-  line-height: 1;
+  line-height: var(--txt-lh-none);
 }
 
 .pub-cite-copy.copied {
@@ -392,7 +392,7 @@ body.pubui-selection-lock .shared-modal-backdrop {
 .related-work-inline-link.link-badge {
   height: 1.2rem;
   min-height: 1.2rem;
-  line-height: 1.1;
+  line-height: var(--txt-lh-heading);
   padding: 0 6px;
 }
 

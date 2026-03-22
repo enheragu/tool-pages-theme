@@ -23,11 +23,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* FOUC guard: body hidden until i18n is applied on first load.
+   The class is added synchronously in tool_head_bootstrap.html and removed
+   inside applyLanguage() in page-shell-core.js after translations run.
+   The transition is defined here (pre-removal state) so the fade-in fires
+   correctly when the class is removed. */
+html.i18n-pending body {
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+
 header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  height: var(--header-h, 64px);
+  min-height: var(--header-h, 64px);
   background: var(--clr-surface);
   border-bottom: 1px solid var(--clr-border);
   box-shadow: var(--shadow);
@@ -56,7 +66,7 @@ header h1,
   font-size: var(--txt-sm);
   color: var(--txt-muted, var(--clr-muted));
   margin-top: 3px;
-  line-height: 1.4;
+  line-height: var(--txt-lh-tight);
 }
 
 .header-controls {
@@ -179,7 +189,7 @@ input[type='checkbox'] {
   border-radius: 6px;
   font-size: var(--txt-md);
   font-weight: var(--txt-w-semibold);
-  line-height: 1;
+  line-height: var(--txt-lh-none);
   cursor: pointer;
   transition: background .12s, border-color .12s, color .12s, transform .1s;
   white-space: nowrap;
@@ -448,7 +458,7 @@ input[type='checkbox'] {
   font-weight: var(--txt-w-semibold);
   letter-spacing: normal;
   text-transform: none;
-  line-height: 1;
+  line-height: var(--txt-lh-none);
   text-align: center;
   padding: .42rem .72rem;
 }
@@ -540,7 +550,7 @@ input[type='checkbox'] {
 .shared-card-title {
   font-size: var(--txt-md-plus);
   font-weight: var(--txt-w-semibold);
-  margin-bottom: .55rem;
+  margin-bottom: .42rem;
   color: var(--clr-muted);
   text-transform: uppercase;
   letter-spacing: .04em;
@@ -573,7 +583,7 @@ input[type='checkbox'] {
   display: flex;
   align-items: baseline;
   gap: .6rem;
-  line-height: 1.2;
+  line-height: var(--txt-lh-compact);
 }
 
 .shared-collapsible-summary::before {
@@ -583,7 +593,7 @@ input[type='checkbox'] {
   text-align: center;
   color: var(--clr-primary);
   font-size: .92em;
-  line-height: 1.2;
+  line-height: var(--txt-lh-compact);
   flex: 0 0 auto;
 }
 
@@ -599,7 +609,7 @@ input[type='checkbox'] {
 .shared-collapsible-title {
   margin: 0;
   text-align: left;
-  line-height: 1.2;
+  line-height: var(--txt-lh-compact);
 }
 
 .shared-collapsible-panel:not([open]) .shared-collapsible-summary::before {
@@ -641,10 +651,10 @@ input[type='checkbox'] {
 }
 
 .shared-plot-canvas {
-  width: 100% !important;
+  display: block;
+  width: 100%;
   background: var(--clr-chart-bg);
   border-radius: 10px;
-  cursor: zoom-in;
 }
 
 .shared-plot-modal-title {
@@ -677,7 +687,7 @@ input[type='checkbox'] {
 .btn-chart-expand::before {
   content: '⤢';
   font-size: var(--txt-md-plus);
-  line-height: 1;
+  line-height: var(--txt-lh-none);
 }
 
 .btn-chart-close {
@@ -695,7 +705,7 @@ input[type='checkbox'] {
 .btn-chart-close::before {
   content: '✕';
   font-size: var(--txt-md);
-  line-height: 1;
+  line-height: var(--txt-lh-none);
 }
 
 .chart-modal-overlay {
@@ -729,13 +739,38 @@ input[type='checkbox'] {
   display: none !important;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .site-footer {
   max-width: 1400px;
-  margin: 0 auto 1.25rem;
-  padding: 0 1.25rem;
+  margin: 1.75rem auto 1.25rem;
+  border-top: 1px solid var(--clr-border);
+  padding: 1.5rem 1.25rem 0;
   color: var(--clr-muted);
   font-size: var(--txt-sm);
   line-height: var(--txt-lh-body);
+}
+
+.footer-extra-top {
+  margin-bottom: .75rem;
+}
+
+.footer-extra-top p {
+  margin-top: 0;
+}
+
+.footer-extra-top p + p {
+  margin-top: .25rem;
 }
 
 .site-footer p {
@@ -779,12 +814,25 @@ input[type='checkbox'] {
   text-decoration: none;
 }
 
-.related-work-root {
-  margin-bottom: .75rem;
-}
-
 .related-work-root-contextual {
   margin-top: .65rem;
+}
+
+.related-work-shell .related-work-root-contextual {
+  margin-top: 0;
+}
+
+.related-work-shell {
+  margin-top: 2.5rem;
+}
+
+.widget-box-accent .panel-header {
+  border-bottom: 0;
+  padding: 0;
+}
+
+.widget-box-accent > .shared-intro-title {
+  margin: 0 0 .35rem;
 }
 
 @media (max-width: 900px) {
@@ -797,34 +845,16 @@ input[type='checkbox'] {
   }
 }
 
-.related-work-block {
-  border: 1px solid var(--clr-border);
-  border-radius: var(--radius);
-  background: var(--clr-surface);
-  box-shadow: var(--shadow);
-  padding: .62rem .72rem;
-}
-
-.related-work-title {
-  font-size: var(--txt-base);
-  color: var(--clr-primary);
-  margin-bottom: .35rem;
-}
-
 .related-work-subtitle {
   font-size: var(--txt-sm);
   color: var(--clr-muted);
   text-transform: uppercase;
   letter-spacing: var(--txt-tracking-wide);
-  margin: .42rem 0 .26rem;
+  margin: 0 0 .22rem;
 }
 
-.related-work-intro {
-  margin: .08rem 0 .28rem;
-  color: var(--clr-muted);
-  font-size: var(--txt-sm);
-  line-height: var(--txt-lh-body);
-  font-weight: var(--txt-w-regular);
+.related-work-root > :first-child {
+  margin-top: 0;
 }
 
 .related-work-intro .related-work-link {
@@ -835,7 +865,7 @@ input[type='checkbox'] {
   list-style: none;
   display: grid;
   gap: .3rem;
-  padding-left: 0;
+  padding-left: 1.2rem;
 }
 
 .related-work-list-pubs {
@@ -940,7 +970,7 @@ input[type='checkbox'] {
   color: var(--clr-primary);
   font-family: var(--font-mono);
   font-size: var(--txt-xs);
-  line-height: 1;
+  line-height: var(--txt-lh-none);
   text-decoration: none;
   vertical-align: baseline;
 }
@@ -1014,7 +1044,7 @@ input[type='checkbox'] {
 
 .related-work-inline-link:not(.link-badge) {
   font-size: var(--txt-xs);
-  line-height: 1.1;
+  line-height: var(--txt-lh-heading);
   height: 1.2rem;
   padding: 0 6px;
   border-radius: 3px;
@@ -1034,7 +1064,6 @@ input[type='checkbox'] {
 /* Related-work cite popup styles moved to shared asset: /assets/shared/publication-ui.css */
 
 @media (max-width: 500px) {
-  .related-work-title { font-size: var(--txt-md-plus); }
   .related-work-list-pubs { max-height: 200px; }
   .header-inner h1 { font-size: var(--txt-base); }
   .subtitle { display: none; }
