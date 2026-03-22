@@ -4,7 +4,7 @@
   var DEFAULT_SOURCE = '/assets/shared/related-work.json';
   var LOCAL_JEKYLL_SOURCE = 'http://127.0.0.1:4000/assets/shared/related-work.json';
   var FALLBACK_SOURCE = 'https://enheragu.github.io/tool-pages-theme/assets/shared/related-work.json';
-  var DEFAULT_PUBLICATIONS_SOURCE = 'https://raw.githubusercontent.com/enheragu/enheragu.github.io/main/_data/publications.yml';
+  var DEFAULT_PUBLICATIONS_SOURCE = 'https://raw.githubusercontent.com/enheragu/enheragu.github.io/master/_data/publications.yml';
   var LOCAL_PUBLICATIONS_SOURCE = '/stat-tools/assets/publications-data.json';
   var EMPTY_DATASET = { tools: {}, publications: [] };
 
