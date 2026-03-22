@@ -24,6 +24,12 @@
 <script src="{{ shared_base }}/tool-shell/page-shell-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tool-shell/page-shell-core.js';"></script>
 {% else %}
 <script src="{{ shared_base }}/chart-interactions.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-interactions.js';"></script>
+{% if page.with_histogram_chart %}
+<script src="{{ shared_base }}/histogram-normal-chart.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/histogram-normal-chart.js';"></script>
+{% endif %}
+{% if page.with_chart_legend %}
+<script src="{{ shared_base }}/chart-legend.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-legend.js';"></script>
+{% endif %}
 <script src="{{ shared_base }}/publication-ui.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/publication-ui.js';"></script>
 <script src="{{ shared_base }}/related-work.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/related-work.js';"></script>
 <script>
