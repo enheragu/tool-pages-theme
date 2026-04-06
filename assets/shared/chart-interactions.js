@@ -147,17 +147,25 @@
     const reset = () => {
       const chart = getChart();
       if (!chart || !defaults) return;
-      if (chart.options.scales?.x && Number.isFinite(defaults.xMin) && Number.isFinite(defaults.xMax)) {
+      if (defaults.mode !== 'y' && chart.options.scales?.x && Number.isFinite(defaults.xMin) && Number.isFinite(defaults.xMax)) {
         chart.options.scales.x.min = defaults.xMin;
         chart.options.scales.x.max = defaults.xMax;
       }
-      if (chart.options.scales?.xLine && Number.isFinite(defaults.xLineMin) && Number.isFinite(defaults.xLineMax)) {
+      if (defaults.mode !== 'y' && chart.options.scales?.xLine && Number.isFinite(defaults.xLineMin) && Number.isFinite(defaults.xLineMax)) {
         chart.options.scales.xLine.min = defaults.xLineMin;
         chart.options.scales.xLine.max = defaults.xLineMax;
       }
-      if (defaults.mode !== 'x' && chart.options.scales?.y && Number.isFinite(defaults.yMin) && Number.isFinite(defaults.yMax)) {
-        chart.options.scales.y.min = defaults.yMin;
-        chart.options.scales.y.max = defaults.yMax;
+      if (defaults.mode !== 'x' && chart.options.scales?.y) {
+        if (Number.isFinite(defaults.yMin)) {
+          chart.options.scales.y.min = defaults.yMin;
+        } else {
+          delete chart.options.scales.y.min;
+        }
+        if (Number.isFinite(defaults.yMax)) {
+          chart.options.scales.y.max = defaults.yMax;
+        } else {
+          delete chart.options.scales.y.max;
+        }
       }
       if (!(Number.isFinite(defaults.xLineMin) && Number.isFinite(defaults.xLineMax))) {
         syncLinkedXAxis(chart, defaults.linkedXSourceAxisId, defaults.linkedXTargetAxisId);
@@ -168,16 +176,18 @@
     const panChart = (chart, dx, dy) => {
       const xScale = chart.scales?.x;
       const yScale = chart.scales?.y;
-      if (!xScale) return;
+      if (!xScale && !yScale) return;
 
-      const xSpan = Number(xScale.max) - Number(xScale.min);
-      const xPxSpan = xScale.right - xScale.left;
-      if (xSpan > 0 && xPxSpan > 0) {
-        const dValX = (-dx / xPxSpan) * xSpan;
-        const nextX = clampedPanRange(Number(xScale.min) + dValX, Number(xScale.max) + dValX, defaults?.xMin, defaults?.xMax);
-        chart.options.scales.x.min = nextX.min;
-        chart.options.scales.x.max = nextX.max;
-        syncLinkedXAxis(chart, defaults?.linkedXSourceAxisId, defaults?.linkedXTargetAxisId);
+      if (defaults?.mode !== 'y' && xScale) {
+        const xSpan = Number(xScale.max) - Number(xScale.min);
+        const xPxSpan = xScale.right - xScale.left;
+        if (xSpan > 0 && xPxSpan > 0) {
+          const dValX = (-dx / xPxSpan) * xSpan;
+          const nextX = clampedPanRange(Number(xScale.min) + dValX, Number(xScale.max) + dValX, defaults?.xMin, defaults?.xMax);
+          chart.options.scales.x.min = nextX.min;
+          chart.options.scales.x.max = nextX.max;
+          syncLinkedXAxis(chart, defaults?.linkedXSourceAxisId, defaults?.linkedXTargetAxisId);
+        }
       }
 
       if (defaults?.mode !== 'x' && yScale) {
@@ -202,7 +212,7 @@
       const factor = e.deltaY < 0 ? 0.9 : 1.1;
       const xScale = chart.scales?.x;
       const yScale = chart.scales?.y;
-      if (xScale) {
+      if (defaults?.mode !== 'y' && xScale) {
         const nextX = nextScaleRange(xScale, factor, e.offsetX, defaults?.xMin, defaults?.xMax);
         chart.options.scales.x.min = nextX.min;
         chart.options.scales.x.max = nextX.max;
@@ -291,7 +301,7 @@
       if (!chart) return;
       const xScale = chart.scales?.x;
       const yScale = chart.scales?.y;
-      if (!xScale) return;
+      if (!xScale && !yScale) return;
 
       if (touchMode === 'pan' && e.touches.length === 1) {
         const touch = e.touches[0];
@@ -313,11 +323,14 @@
 
         const factor = lastPinchDistance / distance;
         const rect = canvas.getBoundingClientRect();
-        const centerX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
-        const nextX = nextScaleRange(xScale, factor, centerX, defaults?.xMin, defaults?.xMax);
-        chart.options.scales.x.min = nextX.min;
-        chart.options.scales.x.max = nextX.max;
-        syncLinkedXAxis(chart, defaults?.linkedXSourceAxisId, defaults?.linkedXTargetAxisId);
+
+        if (defaults?.mode !== 'y' && xScale) {
+          const centerX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
+          const nextX = nextScaleRange(xScale, factor, centerX, defaults?.xMin, defaults?.xMax);
+          chart.options.scales.x.min = nextX.min;
+          chart.options.scales.x.max = nextX.max;
+          syncLinkedXAxis(chart, defaults?.linkedXSourceAxisId, defaults?.linkedXTargetAxisId);
+        }
 
         if (defaults?.mode !== 'x' && yScale) {
           const centerY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;

@@ -75,6 +75,15 @@ header h1,
   gap: .55rem;
 }
 
+/* Host divs for theme toggle and lang switcher inject inline-block / inline-flex
+   children. Making them flex containers avoids inline baseline misalignment that
+   causes the theme toggle to sit higher than the lang switcher. */
+[data-theme-toggle-host],
+[data-lang-switcher-host] {
+  display: flex;
+  align-items: center;
+}
+
 .content-shell {
   max-width: 1400px;
   margin: 1rem auto;
@@ -733,6 +742,49 @@ input[type='checkbox'] {
   width: 100% !important;
   touch-action: none;
   background: var(--clr-chart-bg);
+}
+
+/* ── Shared external chart legend ── */
+.shared-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .35rem .9rem;
+  padding: .35rem 0 .1rem;
+  font-size: var(--txt-xs, .75rem);
+}
+
+.shared-chart-legend--vertical {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: .4rem;
+  padding: .5rem .25rem;
+}
+
+.shared-chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  cursor: pointer;
+  user-select: none;
+  opacity: 1;
+  transition: opacity .15s;
+}
+
+.shared-chart-legend-item.dimmed {
+  opacity: .3;
+  text-decoration: line-through;
+}
+
+.shared-chart-legend-swatch {
+  display: inline-block;
+  box-sizing: content-box;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid;
+  flex-shrink: 0;
 }
 
 .hidden {

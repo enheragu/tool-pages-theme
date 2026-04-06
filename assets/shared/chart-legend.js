@@ -239,12 +239,17 @@
       datasets.forEach(function (ds, idx) {
         if (!ds || !ds._legendHoverOriginal) return;
         var active = !hasActive || idx === activeDatasetIndex;
-        var alpha = active ? 1 : 0.22;
         var orig = ds._legendHoverOriginal;
 
-        if (typeof orig.borderColor === 'string') ds.borderColor = withAlpha(orig.borderColor, alpha);
-        if (typeof orig.backgroundColor === 'string') ds.backgroundColor = withAlpha(orig.backgroundColor, alpha);
-        if (typeof orig.pointBackgroundColor === 'string') ds.pointBackgroundColor = withAlpha(orig.pointBackgroundColor, alpha);
+        if (active) {
+          ds.borderColor = orig.borderColor;
+          ds.backgroundColor = orig.backgroundColor;
+          ds.pointBackgroundColor = orig.pointBackgroundColor;
+        } else {
+          if (typeof orig.borderColor === 'string') ds.borderColor = withAlpha(orig.borderColor, 0.22);
+          if (typeof orig.backgroundColor === 'string') ds.backgroundColor = withAlpha(orig.backgroundColor, 0.22);
+          if (typeof orig.pointBackgroundColor === 'string') ds.pointBackgroundColor = withAlpha(orig.pointBackgroundColor, 0.22);
+        }
       });
 
       chart.update('none');

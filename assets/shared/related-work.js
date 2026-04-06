@@ -5,7 +5,7 @@
   var LOCAL_JEKYLL_SOURCE = 'http://127.0.0.1:4000/assets/shared/related-work.json';
   var FALLBACK_SOURCE = 'https://enheragu.github.io/tool-pages-theme/assets/shared/related-work.json';
   var DEFAULT_PUBLICATIONS_SOURCE = 'https://raw.githubusercontent.com/enheragu/enheragu.github.io/master/_data/publications.yml';
-  var LOCAL_PUBLICATIONS_SOURCE = '/stat-tools/assets/publications-data.json';
+  var LOCAL_PUBLICATIONS_SOURCE = '/publications-data.json';
   var EMPTY_DATASET = { tools: {}, publications: [] };
 
   function extractGitHubRepoSlug(url) {
@@ -135,9 +135,10 @@
       inputSource = null;
     }
 
-    // On localhost, try the locally-served asset first (symlinked from the CV data).
+    // On localhost, prefer same-origin /publications-data.json (avoids CORS issues
+    // when the configured source points to a different Jekyll port).
     var isLocalHost = /^(127\.0\.0\.1|localhost)$/.test(window.location.hostname || '');
-    if (isLocalHost && inputSource !== LOCAL_PUBLICATIONS_SOURCE) {
+    if (isLocalHost) {
       sources.push(LOCAL_PUBLICATIONS_SOURCE);
     }
 
@@ -338,11 +339,11 @@
 
     var links = [];
     if (entry.url) {
-      links.push('<a class="related-work-inline-link" href="' + escapeHtml(entry.url) + '" target="_blank" rel="noopener noreferrer">[link]</a>');
+      links.push('<a class="related-work-inline-link link-badge" href="' + escapeHtml(entry.url) + '" target="_blank" rel="noopener noreferrer">[link]</a>');
     }
     if (entry.doi) {
       var doiHref = /^https?:\/\//i.test(String(entry.doi)) ? String(entry.doi) : ('https://doi.org/' + String(entry.doi));
-      links.push('<a class="related-work-inline-link" href="' + escapeHtml(doiHref) + '" target="_blank" rel="noopener noreferrer">[doi]</a>');
+      links.push('<a class="related-work-inline-link link-badge" href="' + escapeHtml(doiHref) + '" target="_blank" rel="noopener noreferrer">[doi]</a>');
     }
     var linkHtml = links.length ? (' ' + links.join(' ')) : '';
     return linkHtml;
@@ -400,8 +401,8 @@
       '<li class="related-work-item related-work-item-pub related-work-item-repo"' + keyAttr + slugAttr + noFetchAttr + fallbackAttr + '>' +
       '<span class="related-work-type-badge">' + escapeHtml(badgeText) + '</span>' +
       '<strong>' + escapeHtml(label) + '</strong>' +
-      linkBadge +
       descHtml +
+      linkBadge +
       '</li>';
   }
 
@@ -793,7 +794,7 @@
     }
 
     var relatedSection = relatedItemsHtml
-      ? '<h4 class="related-work-subtitle">' + relatedTitle + '</h4><ul class="related-work-list related-work-list-pubs">' + relatedItemsHtml + '</ul>'
+      ? '<br><h4 class="related-work-subtitle">' + relatedTitle + '</h4><ul class="related-work-list related-work-list-pubs">' + relatedItemsHtml + '</ul>'
       : '';
 
     container.innerHTML = supportBlock + relatedSection;

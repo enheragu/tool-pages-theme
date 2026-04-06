@@ -6,7 +6,7 @@
 <meta property="og:site_name" content="{{ include.tool_name }}">
 <meta {% if include.with_i18n_meta_ids %}id="meta-og-url" {% endif %}property="og:url" content="{{ include.url }}/">
 <meta {% if include.with_i18n_meta_ids %}id="meta-og-locale" {% endif %}property="og:locale" content="{{ include.og_locale | default: 'en_GB' }}">
-{% if include.project == 'harris' %}
+{% if include.lang_mode == 'path' %}
 <meta property="og:locale:alternate" content="es_ES">
 {% endif %}
 <meta {% if include.with_i18n_meta_ids %}id="meta-og-title" {% endif %}property="og:title" content="{{ include.og_title | default: include.title }}">
@@ -20,9 +20,7 @@
 <meta {% if include.with_i18n_meta_ids %}id="meta-twitter-title" {% endif %}name="twitter:title" content="{{ include.twitter_title | default: include.og_title | default: include.title }}">
 <meta {% if include.with_i18n_meta_ids %}id="meta-twitter-description" {% endif %}name="twitter:description" content="{{ include.twitter_description | default: include.og_description | default: include.description }}">
 <meta name="twitter:image" content="{{ include.og_image | default: include.url | append: '/assets/og-image.png' }}">
-{% if include.project == 'harris' %}
 <meta name="twitter:image:alt" content="{{ include.og_image_alt | default: include.tool_name | append: ' preview image' }}">
-{% endif %}
 <link rel="canonical" href="{{ include.url }}/">
 <link rel="icon" type="image/svg+xml" href="{{ include.icon_href | default: 'assets/favicon.svg' }}">
 <link rel="alternate" hreflang="x-default" href="{{ include.url }}/">

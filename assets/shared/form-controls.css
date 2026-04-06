@@ -152,3 +152,98 @@
   opacity: .7;
   filter: saturate(.58) brightness(.9);
 }
+
+/* ── Double-thumb range modifier ── */
+
+.shared-range-control.range-double {
+  gap: 4px;
+}
+
+.range-double-track {
+  position: relative;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+
+/* Visible track bar */
+.range-double-track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--range-track-bg);
+  border: 1px solid var(--range-track-border);
+  pointer-events: none;
+}
+
+/* Filled region between thumbs */
+.range-double-track::after {
+  content: '';
+  position: absolute;
+  left: var(--range-fill-start, 5%);
+  right: calc(100% - var(--range-fill-end, 95%));
+  height: 6px;
+  border-radius: 999px;
+  background: var(--range-thumb-bg);
+  opacity: .35;
+  pointer-events: none;
+}
+
+.range-double-track input[type='range'] {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: none;
+}
+
+/* Pointer events handled entirely by JS on the track container */
+
+.range-double-track input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--range-thumb-border);
+  background: var(--range-thumb-bg);
+  box-shadow: var(--shadow-soft-card);
+  cursor: pointer;
+}
+
+.range-double-track input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--range-thumb-border);
+  background: var(--range-thumb-bg);
+  box-shadow: var(--shadow-soft-card);
+  cursor: pointer;
+}
+
+.range-double-track input[type='range']:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--range-focus-outline);
+  outline-offset: 2px;
+}
+
+.range-double-track input[type='range']::-webkit-slider-runnable-track {
+  background: transparent;
+  border: none;
+}
+
+.range-double-track input[type='range']::-moz-range-track {
+  background: transparent;
+  border: none;
+  height: 6px;
+}
