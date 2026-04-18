@@ -26,3 +26,21 @@
 .shared-status-hint[data-type='ok'] {
   color: var(--clr-status-success);
 }
+
+.shared-status-hint.is-busy::before {
+  content: '';
+  display: inline-block;
+  width: .72rem;
+  height: .72rem;
+  margin-right: .4rem;
+  border-radius: 999px;
+  border: 2px solid color-mix(in oklab, var(--clr-primary) 45%, transparent);
+  border-top-color: var(--clr-primary);
+  animation: shared-spin .8s linear infinite;
+  vertical-align: -1px;
+}
+
+body.sim-is-busy,
+body.sim-is-busy * { cursor: progress !important; }
+
+@keyframes shared-spin { to { transform: rotate(360deg); } }
