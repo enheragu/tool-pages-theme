@@ -111,10 +111,28 @@ header h1,
   margin-bottom: .35rem;
 }
 
-.intro-panel p {
+.intro-panel p,
+.intro-text-body {
   color: var(--txt-muted, var(--clr-muted));
   font-size: var(--txt-md);
   line-height: var(--txt-lh-relaxed);
+}
+
+.intro-text-body ol,
+.intro-text-body ul {
+  padding-left: 1.4rem;
+  margin: .35rem 0;
+}
+
+.intro-text-body li + li {
+  margin-top: .2rem;
+}
+
+.intro-text-body h4 {
+  font-size: var(--txt-md);
+  font-weight: var(--txt-w-semibold);
+  color: var(--txt-muted, var(--clr-muted));
+  margin-top: .5rem;
 }
 
 .panel-header {

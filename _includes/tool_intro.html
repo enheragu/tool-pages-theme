@@ -1,6 +1,6 @@
 <div class="content-shell">
   {% capture intro_body %}
-    <p{% if include.text_id %} id="{{ include.text_id }}"{% endif %}{% if include.text_i18n_key %} data-i18n="{{ include.text_i18n_key }}"{% endif %}{% if include.text_i18n_html_key %} data-i18n-html="{{ include.text_i18n_html_key }}"{% endif %}{% if include.inline_cite %} data-inline-cite{% endif %}>{{ include.text }}</p>
+    <div class="intro-text-body"{% if include.text_id %} id="{{ include.text_id }}"{% endif %}{% if include.text_i18n_key %} data-i18n="{{ include.text_i18n_key }}"{% endif %}{% if include.text_i18n_html_key %} data-i18n-html="{{ include.text_i18n_html_key }}"{% endif %}{% if include.inline_cite %} data-inline-cite{% endif %}>{{ include.text }}</div>
   {% endcapture %}
   {% include widgets/widget_content_box.html
     tag='section'
