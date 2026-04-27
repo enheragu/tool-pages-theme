@@ -1,13 +1,11 @@
-{% if include.redirect_path %}
-<script>
+{% if include.redirect_path %}<script>
   (function () {
     var p = window.location.pathname;
-    if (p === '{{ include.redirect_path }}') {
-      window.location.replace('{{ include.redirect_path }}/' + window.location.search + window.location.hash);
+    if (p.slice(-1) !== '/') {
+      window.location.replace(p + '/' + window.location.search + window.location.hash);
     }
   })();
-</script>
-{% endif %}
+</script>{% endif %}
 <script>
   (function () {
     var saved = localStorage.getItem('theme');
