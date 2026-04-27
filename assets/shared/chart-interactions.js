@@ -125,7 +125,7 @@
   }
 
   function attach(options) {
-    const { canvas, getChart, defaults, onActivate } = options || {};
+    const { canvas, getChart, defaults, onActivate, readonly } = options || {};
     if (!canvas || typeof getChart !== 'function') return;
     detach(canvas);
 
@@ -364,32 +364,34 @@
       lastPinchDistance = 0;
     };
 
-    canvas.addEventListener('dblclick', handleDblClick);
-    canvas.addEventListener('wheel', handleWheel, { passive: false });
-    canvas.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    if (!readonly) {
+      canvas.addEventListener('dblclick', handleDblClick);
+      canvas.addEventListener('wheel', handleWheel, { passive: false });
+      canvas.addEventListener('mousedown', handleMouseDown);
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+      canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+      canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+    }
     canvas.addEventListener('click', handleClick);
     if (typeof onActivate === 'function') {
       canvas.addEventListener('mousemove', handleMouseHover);
       canvas.addEventListener('mouseleave', handleMouseLeave);
     }
-    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
 
     canvas._sharedChartInteractionHandlers = {
-      handleDblClick,
-      handleWheel,
-      handleMouseDown,
-      handleMouseMove,
-      handleMouseUp,
+      handleDblClick: readonly ? null : handleDblClick,
+      handleWheel: readonly ? null : handleWheel,
+      handleMouseDown: readonly ? null : handleMouseDown,
+      handleMouseMove: readonly ? null : handleMouseMove,
+      handleMouseUp: readonly ? null : handleMouseUp,
       handleClick,
       handleMouseHover: typeof onActivate === 'function' ? handleMouseHover : null,
       handleMouseLeave: typeof onActivate === 'function' ? handleMouseLeave : null,
-      handleTouchStart,
-      handleTouchMove,
-      handleTouchEnd,
+      handleTouchStart: readonly ? null : handleTouchStart,
+      handleTouchMove: readonly ? null : handleTouchMove,
+      handleTouchEnd: readonly ? null : handleTouchEnd,
     };
   }
 
