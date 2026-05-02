@@ -304,6 +304,7 @@
         .concat(Array.isArray(category.publication_keys) ? category.publication_keys : [])
         .concat(Array.isArray(tool.publication_keys) ? tool.publication_keys : []),
       support: mergeSupport(mergeSupport(global.support || {}, category.support || {}), tool.support || {}),
+      references: Array.isArray(tool.references) ? tool.references : [],
     };
 
     if (tool.title && typeof tool.title === 'object') {
@@ -674,6 +675,51 @@
     return safeTemplate;
   }
 
+  function renderReferenceItem(ref, lang) {
+    var typeLabels = {
+      article:       { en: 'Article',      es: 'Artículo' },
+      inproceedings: { en: 'Conference',   es: 'Conferencia' },
+      conference:    { en: 'Conference',   es: 'Conferencia' },
+      misc:          { en: 'Online',       es: 'Online' },
+      book:          { en: 'Book',         es: 'Libro' },
+      techreport:    { en: 'Tech. Report', es: 'Inf. Técnico' },
+      phdthesis:     { en: 'PhD Thesis',   es: 'Tesis Doctoral' },
+    };
+    var typeKey = String(ref.type || '').toLowerCase();
+    var typeLabelObj = typeLabels[typeKey] || {};
+    var typeLabel = typeLabelObj[lang] || typeLabelObj.en || '';
+    var badgeHtml = typeLabel ? '<span class="related-work-type-badge">' + escapeHtml(typeLabel) + '</span>' : '';
+
+    var authors = Array.isArray(ref.authors) ? ref.authors.join(', ') : String(ref.authors || '');
+    var authorsHtml = authors ? '<cite><small>' + escapeHtml(authors) + '. </small></cite>' : '';
+    var yearHtml = ref.year ? '(' + escapeHtml(String(ref.year)) + '). ' : '';
+    var titleHtml = '<strong>' + escapeHtml(ref.title || '') + '</strong>.';
+
+    var venueHtml = '';
+    if (ref.venue) {
+      venueHtml = ' <em>' + escapeHtml(ref.venue) + '</em>';
+      if (ref.volume) {
+        venueHtml += ', <em>' + escapeHtml(String(ref.volume)) + '</em>';
+        if (ref.issue) venueHtml += '(' + escapeHtml(String(ref.issue)) + ')';
+      }
+      if (ref.pages) venueHtml += ', ' + escapeHtml(String(ref.pages));
+      venueHtml += '.';
+    }
+
+    var linksHtml = '';
+    if (ref.doi) {
+      var doiHref = /^https?:\/\//i.test(String(ref.doi)) ? String(ref.doi) : ('https://doi.org/' + String(ref.doi));
+      linksHtml += ' <a class="related-work-inline-link link-badge" href="' + escapeHtml(doiHref) + '" target="_blank" rel="noopener noreferrer">[doi]</a>';
+    }
+    if (ref.url) {
+      linksHtml += ' <a class="related-work-inline-link link-badge" href="' + escapeHtml(ref.url) + '" target="_blank" rel="noopener noreferrer">[link]</a>';
+    }
+
+    var keyAttr = ref.key ? (' data-pub-key="' + escapeHtml(ref.key) + '"') : '';
+    return '<li class="related-work-item related-work-item-pub related-work-item-ref"' + keyAttr + '>' +
+      badgeHtml + authorsHtml + yearHtml + titleHtml + venueHtml + linksHtml + '</li>';
+  }
+
   function render(container, toolId, options) {
     var rawData = options && options.data;
     var data = normalizeDataset(rawData);
@@ -736,7 +782,8 @@
       return '<li class="related-work-item related-work-item-link"><a class="related-work-link" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(label) + '</a></li>';
     }).filter(Boolean).join('');
 
-    if (!links.length && !publications.length && !supportRepoUrl && !supportIntroText && !supportDoiItems && !supportPublications.length) {
+    var references = Array.isArray(item.references) ? item.references : [];
+    if (!links.length && !publications.length && !supportRepoUrl && !supportIntroText && !supportDoiItems && !supportPublications.length && !references.length) {
       container.innerHTML = '';
       if (shell) shell.classList.add('hidden');
       return;
@@ -797,7 +844,17 @@
       ? '<br><h4 class="related-work-subtitle">' + relatedTitle + '</h4><ul class="related-work-list related-work-list-pubs">' + relatedItemsHtml + '</ul>'
       : '';
 
-    container.innerHTML = supportBlock + relatedSection;
+    var referencesSection = '';
+    if (references.length) {
+      var refsTitle = lang === 'es' ? 'Referencias' : 'References';
+      var refsHtml = references.map(function (ref) {
+        return renderReferenceItem(ref, lang);
+      }).join('');
+      referencesSection = '<br><h4 class="related-work-subtitle">' + escapeHtml(refsTitle) + '</h4>' +
+        '<ul class="related-work-list related-work-list-refs">' + refsHtml + '</ul>';
+    }
+
+    container.innerHTML = supportBlock + relatedSection + referencesSection;
     hydrateRepoRelatedItems(container, lang);
     var anchors = ensurePublicationEntryAnchors(container);
     applyInlineCitations(toolId, lang, anchors.keyToId, anchors.orderedKeys);

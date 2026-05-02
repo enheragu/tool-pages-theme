@@ -544,6 +544,10 @@ input[type='checkbox'] {
   text-align: right;
 }
 
+.shared-results-table.shared-results-table--num th:not(.shared-cell-text) {
+  text-align: right;
+}
+
 .shared-stat-chip {
   border: 1px solid var(--clr-border);
   border-radius: 10px;

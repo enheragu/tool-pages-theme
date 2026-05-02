@@ -110,14 +110,14 @@
     {% if page.intro_title %}
       {% assign resolved_intro_title_id = page.intro_title_id | default: 'intro-title' %}
       {% assign resolved_intro_text_id = page.intro_text_id | default: 'intro-text' %}
+      {% assign resolved_intro_text_html_key = page.intro_text_i18n_html_key | default: page.intro_text_i18n_key %}
       {% include tool_intro.html
         title=page.intro_title
         title_id=resolved_intro_title_id
         title_i18n_key=page.intro_title_i18n_key
         text=page.intro_text
         text_id=resolved_intro_text_id
-        text_i18n_key=page.intro_text_i18n_key
-        text_i18n_html_key=page.intro_text_i18n_html_key
+        text_i18n_html_key=resolved_intro_text_html_key
         inline_cite=page.intro_inline_cite
       %}
     {% endif %}
