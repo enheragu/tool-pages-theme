@@ -78,6 +78,7 @@ header h1,
   font-weight: var(--txt-w-semibold);
   color: var(--txt-muted, var(--clr-muted));
   margin-top: 3px;
+  margin-bottom: .35rem;
   line-height: var(--txt-lh-tight);
 }
 
@@ -396,7 +397,7 @@ input[type='checkbox'] {
 }
 
 .app-section-title {
-  font-size: var(--txt-lg-plus);
+  font-size: var(--txt-xl);
   font-weight: var(--txt-w-bold);
   margin-bottom: .75rem;
   color: var(--clr-primary);
