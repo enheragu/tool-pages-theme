@@ -16,6 +16,7 @@
 
 body {
   font-family: var(--font-sans);
+  font-size: var(--txt-base);
   line-height: var(--txt-lh-body);
   color: var(--clr-text);
   background: var(--clr-bg);
@@ -54,19 +55,42 @@ header {
   gap: 1rem;
 }
 
+.header-supertitle {
+  font-size: var(--txt-xs);
+  font-weight: var(--txt-w-semibold);
+  color: var(--clr-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: -0.15rem;
+}
+
 header h1,
 .shared-page-title {
-  font-size: var(--txt-xl);
+  font-size: var(--txt-2xl);
   font-weight: var(--txt-w-extrabold);
   letter-spacing: var(--txt-tracking-normal);
   color: var(--txt-accent, var(--clr-primary));
+  line-height: var(--txt-lh-tight);
 }
 
 .subtitle {
-  font-size: var(--txt-sm);
+  font-size: var(--txt-base);
+  font-weight: var(--txt-w-semibold);
   color: var(--txt-muted, var(--clr-muted));
   margin-top: 3px;
   line-height: var(--txt-lh-tight);
+}
+
+/* Inline links in content areas use the primary accent colour. */
+.intro-panel a,
+.intro-text-body a,
+.panel-block a {
+  color: var(--clr-primary);
+}
+.intro-panel a:hover,
+.intro-text-body a:hover,
+.panel-block a:hover {
+  text-decoration: underline;
 }
 
 .header-controls {
@@ -114,7 +138,7 @@ header h1,
 .intro-panel p,
 .intro-text-body {
   color: var(--txt-muted, var(--clr-muted));
-  font-size: var(--txt-md);
+  font-size: var(--txt-base);
   line-height: var(--txt-lh-relaxed);
 }
 
@@ -166,7 +190,8 @@ header h1,
 
 label {
   display: block;
-  font-size: var(--txt-sm);
+  font-size: var(--txt-md);
+  font-weight: var(--txt-w-semibold);
   color: var(--txt-muted, var(--clr-muted));
   margin-bottom: .28rem;
 }
@@ -579,7 +604,7 @@ input[type='checkbox'] {
 
 .card h3,
 .shared-card-title {
-  font-size: var(--txt-md-plus);
+  font-size: var(--txt-base);
   font-weight: var(--txt-w-semibold);
   margin-bottom: .42rem;
   color: var(--clr-muted);
@@ -674,7 +699,7 @@ input[type='checkbox'] {
 
 .shared-plot-title {
   margin: 0;
-  font-size: var(--txt-md-plus);
+  font-size: var(--txt-base);
   font-weight: var(--txt-w-semibold);
   color: var(--clr-muted);
   text-transform: uppercase;
@@ -909,7 +934,7 @@ input[type='checkbox'] {
   margin: 0 0 .35rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 56.25em) {
   .shared-controls-grid {
     grid-template-columns: 1fr;
   }
@@ -1137,7 +1162,7 @@ input[type='checkbox'] {
 
 /* Related-work cite popup styles moved to shared asset: /assets/shared/publication-ui.css */
 
-@media (max-width: 500px) {
+@media (max-width: 31.25em) {
   .related-work-list-pubs { max-height: 200px; }
   .header-inner h1 { font-size: var(--txt-base); }
   .subtitle { display: none; }

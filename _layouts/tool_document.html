@@ -94,6 +94,7 @@
       {% assign resolved_header_title_id = page.header_title_id | default: 'site-title' %}
       {% assign resolved_header_subtitle_id = page.header_subtitle_id | default: 'site-subtitle' %}
       {% include tool_header.html
+        supertitle=page.header_supertitle
         title=page.header_title
         title_id=resolved_header_title_id
         title_i18n_key=page.header_title_i18n_key

@@ -87,12 +87,9 @@
     if (!config.showBackButton) return;
     if (document.querySelector('.tools-nav-back')) return;
 
+    var headerInner = document.querySelector('.header-inner');
     var titleContainer = document.querySelector('.header-inner > div:first-child');
-    var title = titleContainer ? titleContainer.querySelector('h1') : null;
-    if (!title || !titleContainer) return;
-
-    var row = document.createElement('div');
-    row.className = 'tools-nav-title-row';
+    if (!headerInner || !titleContainer) return;
 
     var back = document.createElement('a');
     back.className = 'tools-nav-back';
@@ -101,9 +98,10 @@
     back.setAttribute('aria-label', localize(config.backLabel || { en: 'Back to landing', es: 'Volver al inicio' }, lang));
     back.title = localize(config.backLabel || { en: 'Back to landing', es: 'Volver al inicio' }, lang);
 
-    title.parentNode.insertBefore(row, title);
-    row.appendChild(back);
-    row.appendChild(title);
+    // Inject button directly into header-inner as an absolutely-positioned element.
+    // It does not participate in the flex flow, so the title text is never displaced.
+    headerInner.insertBefore(back, titleContainer);
+    titleContainer.classList.add('has-nav-back');
   }
 
   function init(userConfig) {

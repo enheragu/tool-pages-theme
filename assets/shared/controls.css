@@ -351,8 +351,8 @@ body.dark .lang-btn:not(.active) {
   min-height: 35px;
   padding: .45rem .82rem;
   margin-bottom: -1px;
-  font-size: var(--txt-sm);
-  font-weight: var(--txt-w-medium);
+  font-size: var(--txt-md);
+  font-weight: var(--txt-w-semibold);
   line-height: 1;
   cursor: pointer;
   transition: background .12s, border-color .12s, color .12s;
@@ -636,7 +636,7 @@ body.dark .lang-btn:not(.active) {
   gap: .45rem;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 31.25em) {
   .lang-switcher { width: 78px; }
   .lang-btn { grid-template-columns: 16px; }
   .lang-btn span:last-child { display: none; }

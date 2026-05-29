@@ -812,6 +812,7 @@
       ? 'Si este trabajo te ha resultado útil, considera dar una estrella al {repo_link} o citar estos trabajos:'
       : 'If this work was useful to you, consider giving a star to the {repo_link} and citing these works:';
     var relatedTitle = lang === 'es' ? 'Trabajos relacionados' : 'Related work';
+    var citingTitle = lang === 'es' ? 'Citar' : 'Citing';
 
     var supportCitationItems = supportDoiItems;
     if (supportPublications.length) {
@@ -825,6 +826,7 @@
     var supportBlock = (supportRepoUrl || supportIntroText || supportCitationItems)
       ?
         '<div class="related-work-support">' +
+        (supportCitationItems ? '<br><h4 class="related-work-subtitle">' + citingTitle + '</h4>' : '') +
         '<p class="related-work-intro">' + introHtml + '</p>' +
         (supportCitationItems ? '<ul class="related-work-list">' + supportCitationItems + '</ul>' : '') +
         '</div>'

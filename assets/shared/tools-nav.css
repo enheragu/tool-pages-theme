@@ -1,10 +1,22 @@
+.header-inner {
+  position: relative;
+}
+
+/* Indent text when back button is present — button itself is out of flex flow. */
+.header-inner > div.has-nav-back {
+  padding-left: 3.2rem;
+}
+
 .tools-nav-back {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  margin-right: .55rem;
+  position: absolute;
+  left: 1.25rem; /* matches header-inner padding */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
   border: 1px solid var(--clr-border);
   border-radius: 8px;
   background: var(--clr-surface);
@@ -20,7 +32,7 @@
   color: var(--clr-text);
   border-color: var(--clr-primary);
   background: color-mix(in oklab, var(--clr-surface) 86%, var(--clr-primary));
-  transform: translateX(-1px);
+  transform: translateY(-50%) translateX(-1px);
 }
 
 .tools-nav-back svg {
@@ -38,11 +50,6 @@
   box-shadow: 0 0 0 2px var(--clr-ui-focus-ring);
 }
 
-.tools-nav-title-row {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
 
 /* Reserve room for floating language + menu controls on narrow headers. */
 .header-inner > div:first-child {
@@ -243,7 +250,7 @@ body.dark .tools-nav-floating-controls .theme-toggle {
   visibility: visible;
 }
 
-@media (max-width: 780px) {
+@media (max-width: 48.75em) {
   .header-inner > div:first-child {
     padding-right: 3rem;
   }
@@ -257,9 +264,4 @@ body.dark .tools-nav-floating-controls .theme-toggle {
     right: .85rem;
   }
 
-  .tools-nav-back {
-    width: 32px;
-    height: 32px;
-    margin-right: .45rem;
-  }
 }

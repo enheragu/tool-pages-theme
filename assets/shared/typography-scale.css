@@ -4,16 +4,18 @@
   --txt-ui: 14px;
 
   --txt-2xs: .68rem;
-  --txt-xs: .74rem;
-  --txt-sm: .8rem;
-  --txt-sm-plus: .82rem;
-  --txt-md: .84rem;
-  --txt-md-plus: .88rem;
-  --txt-base: .95rem;
-  --txt-base-plus: 1rem;
+  --txt-xs: .75rem;
+  --txt-sm: .82rem;
+  --txt-sm-plus: .85rem;
+  --txt-md: .92rem;
+  --txt-md-plus: .95rem;
+  --txt-base: 1rem;
+  --txt-base-plus: 1.05rem;
   --txt-lg: 1.03rem;
   --txt-lg-plus: 1.05rem;
   --txt-xl: 1.5rem;
+  --txt-xl-plus: 1.65rem;
+  --txt-2xl: 1.9rem;
   --txt-display: 2.2rem;
 
   --txt-w-regular: 400;
