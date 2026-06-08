@@ -106,10 +106,18 @@ window.SharedImageCard = (() => {
     }
 
     function _fromFile(file) {
-      if (!file || !file.type.startsWith('image/')) return;
-      createImageBitmap(file)
+      if (!file) return;
+      const isHeic = window.SharedHeicLoader && SharedHeicLoader.isHeic(file);
+      if (!isHeic && !file.type.startsWith('image/')) return;
+      const decode = (blob) => createImageBitmap(blob)
         .then((bmp) => _markLoaded(bmp, file.name))
         .catch((err) => console.warn('[SharedImageCard] Failed to decode file:', err));
+      if (isHeic) {
+        SharedHeicLoader.toBlob(file).then(decode)
+          .catch((err) => console.warn('[SharedImageCard] HEIC conversion failed:', err));
+      } else {
+        decode(file);
+      }
     }
 
     // ── public API ────────────────────────────────────────────────

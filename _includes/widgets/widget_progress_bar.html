@@ -1,0 +1,30 @@
+{% comment %}
+  Shared progress bar widget.
+  Parameters:
+    wrap_id    — required: id for the outer wrapper element
+    bar_id     — required: id for the bar fill element
+    style      — optional: 'thin' (default) or 'labeled'
+    label_id   — optional: id for the text label (labeled style only)
+    hidden     — optional: if truthy, adds 'hidden' class to wrapper
+{% endcomment %}
+{% assign pb_style = include.style | default: 'thin' %}
+{% if pb_style == 'labeled' %}
+<div id="{{ include.wrap_id }}" class="shared-progress-bar-wrap--labeled{% if include.hidden %} hidden{% endif %}">
+  <div class="shared-progress-bar-track--labeled">
+    <div id="{{ include.bar_id }}"
+         class="shared-progress-bar--labeled"
+         role="progressbar"
+         aria-valuemin="0"
+         aria-valuemax="100"
+         aria-valuenow="0"
+         style="width:0%"></div>
+    {% if include.label_id %}
+    <p id="{{ include.label_id }}" class="shared-progress-bar-text"></p>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<div id="{{ include.wrap_id }}" class="shared-progress-bar-wrap{% if include.hidden %} hidden{% endif %}" aria-hidden="true">
+  <div id="{{ include.bar_id }}" class="shared-progress-bar" style="width:0%"></div>
+</div>
+{% endif %}

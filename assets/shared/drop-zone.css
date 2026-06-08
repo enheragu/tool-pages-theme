@@ -1,0 +1,44 @@
+/* ── Shared Drop Zone ────���───────────────────────────────────────────────────── */
+
+.shared-drop-zone {
+  border: 2px dashed var(--clr-border);
+  border-radius: 10px;
+  padding: 1.5rem 1.1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  background: color-mix(in oklab, var(--clr-surface) 80%, var(--clr-bg));
+  user-select: none;
+}
+
+.shared-drop-zone:hover,
+.shared-drop-zone.drag-over {
+  border-color: var(--clr-primary);
+  background: color-mix(in oklab, var(--clr-primary) 6%, var(--clr-surface));
+}
+
+.shared-drop-zone .drop-zone-icon {
+  color: var(--clr-muted);
+  margin-bottom: .5rem;
+  line-height: 1;
+}
+
+.shared-drop-zone .drop-zone-hint {
+  font-size: var(--txt-sm);
+  color: var(--clr-muted);
+  margin: .25rem 0 .55rem;
+}
+
+.shared-drop-zone .drop-zone-or {
+  font-size: var(--txt-xs);
+  color: var(--clr-muted);
+  margin: .3rem 0;
+}
+
+.drop-zone-btns {
+  display: flex;
+  gap: .4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: .4rem;
+}

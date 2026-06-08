@@ -1,0 +1,60 @@
+/* ── Shared Progress Bar ─────────────────────────────────────────────────────── */
+
+/* Thin variant (default) — compact inline indicator */
+.shared-progress-bar-wrap {
+  height: 4px;
+  background: var(--clr-border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: .4rem;
+  width: 100%;
+}
+
+.shared-progress-bar-wrap.hidden {
+  display: none;
+}
+
+.shared-progress-bar {
+  height: 100%;
+  background: var(--clr-primary);
+  border-radius: 2px;
+  transition: width .25s ease;
+}
+
+/* Labeled variant — tall bar with text overlay */
+.shared-progress-bar-wrap--labeled {
+  margin-top: .5rem;
+}
+
+.shared-progress-bar-wrap--labeled.hidden {
+  display: none;
+}
+
+.shared-progress-bar-track--labeled {
+  height: 28px;
+  border-radius: 6px;
+  background: var(--clr-border);
+  overflow: hidden;
+  position: relative;
+}
+
+.shared-progress-bar--labeled {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  border-radius: 6px;
+  background: var(--clr-primary);
+  transition: width .3s ease;
+  width: 0%;
+}
+
+.shared-progress-bar-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--txt-xs);
+  font-weight: 600;
+  color: var(--clr-text);
+  text-shadow: 0 0 6px var(--clr-surface, #fff), 0 0 6px var(--clr-surface, #fff);
+}

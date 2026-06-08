@@ -1,0 +1,43 @@
+<dialog id="shared-color-picker-dialog" class="panel custom-color-modal">
+  <div class="panel-header subpanel-header">
+    <h2 id="shared-cp-title" class="shared-panel-title">Choose a color</h2>
+    <button id="shared-cp-close" class="btn-preview-icon btn-modal-close shared-icon-btn shared-close-btn" type="button" aria-label="Close" title="Close">
+      <span aria-hidden="true" class="icon-close">
+        <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+          <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+  <div class="color-picker-body">
+    <div class="color-picker-map-wrap">
+      <span id="shared-cp-lbl-map" class="custom-color-map-label">Color map</span>
+      <div id="shared-cp-sv" class="custom-color-map" role="slider" aria-labelledby="shared-cp-lbl-map" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" tabindex="0">
+        <span id="shared-cp-sv-thumb" class="custom-color-map-thumb" aria-hidden="true"></span>
+      </div>
+    </div>
+    <label class="custom-hue-wrap" for="shared-cp-hue">
+      <span id="shared-cp-lbl-hue" class="custom-hue-label">Hue</span>
+      <input id="shared-cp-hue" class="custom-hue-range" type="range" min="0" max="360" step="1" value="0" aria-label="Hue">
+    </label>
+    <div class="custom-rgb-row">
+      <label class="custom-rgb-field"><span class="custom-rgb-label">R</span><input id="shared-cp-r" class="custom-rgb-input" type="number" min="0" max="255" value="255" aria-label="Red"></label>
+      <label class="custom-rgb-field"><span class="custom-rgb-label">G</span><input id="shared-cp-g" class="custom-rgb-input" type="number" min="0" max="255" value="255" aria-label="Green"></label>
+      <label class="custom-rgb-field"><span class="custom-rgb-label">B</span><input id="shared-cp-b" class="custom-rgb-input" type="number" min="0" max="255" value="255" aria-label="Blue"></label>
+    </div>
+    <input id="shared-cp-hex" class="custom-color-hex" type="text" value="#FFFFFF" inputmode="text" maxlength="7" spellcheck="false" aria-label="HEX">
+    <div id="shared-cp-lbl-palette" class="custom-palette-label">Palette</div>
+    <div class="custom-palette-row" role="group" aria-labelledby="shared-cp-lbl-palette">
+      {% if include.palette_chips %}
+        {{ include.palette_chips }}
+      {% else %}
+        <button class="palette-chip" type="button" data-palette-color="#FFFFFF" style="--chip:#FFFFFF"></button>
+        <button class="palette-chip" type="button" data-palette-color="#000000" style="--chip:#000000"></button>
+        <button class="palette-chip" type="button" data-palette-color="#58A6FF" style="--chip:#58A6FF"></button>
+        <button class="palette-chip" type="button" data-palette-color="#3FB950" style="--chip:#3FB950"></button>
+        <button class="palette-chip" type="button" data-palette-color="#D29922" style="--chip:#D29922"></button>
+        <button class="palette-chip" type="button" data-palette-color="#F85149" style="--chip:#F85149"></button>
+      {% endif %}
+    </div>
+  </div>
+</dialog>

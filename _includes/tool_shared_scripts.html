@@ -60,5 +60,11 @@
 <script src="{{ tools_base }}/assets/stat-tools-page-utils.js" onerror="this.onerror=null;this.src='https://enheragu.github.io{{ tools_base }}/assets/stat-tools-page-utils.js';"></script>
 <script src="{{ shared_base }}/tools-nav.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tools-nav.js';"></script>
 {% endif %}
+{% if page.with_heic_loader %}
+<script src="{{ shared_base }}/heic-loader.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/heic-loader.js';"></script>
+{% endif %}
+{% if page.with_color_picker %}
+<script src="{{ shared_base }}/color-picker.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/color-picker.js';"></script>
+{% endif %}
 <script src="{{ shared_base }}/shared-footer.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/shared-footer.js';"></script>
 <script src="{{ shared_base }}/tool-shell/page-shell-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tool-shell/page-shell-core.js';"></script>

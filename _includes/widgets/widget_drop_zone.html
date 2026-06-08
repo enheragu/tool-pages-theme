@@ -1,0 +1,26 @@
+{% comment %}
+  Shared drop-zone widget.
+  Parameters:
+    zone_id        — required: id attribute for the drop zone element
+    zone_class     — optional: extra CSS classes appended to 'shared-drop-zone'
+    aria_label     — optional: aria-label (defaults to zone_id)
+    icon_html      — optional: raw HTML for the icon inside .drop-zone-icon
+    hint_text      — optional: hint paragraph text
+    hint_id        — optional: id for the hint paragraph
+    slot_buttons   — optional: HTML string for the .drop-zone-btns area
+{% endcomment %}
+<div id="{{ include.zone_id }}"
+     class="shared-drop-zone{% if include.zone_class %} {{ include.zone_class }}{% endif %}"
+     role="button"
+     tabindex="0"
+     aria-label="{{ include.aria_label | default: include.zone_id }}">
+  {% if include.icon_html %}
+  <div class="drop-zone-icon" aria-hidden="true">{{ include.icon_html }}</div>
+  {% endif %}
+  {% if include.hint_text %}
+  <p class="drop-zone-hint"{% if include.hint_id %} id="{{ include.hint_id }}"{% endif %}>{{ include.hint_text }}</p>
+  {% endif %}
+  {% if include.slot_buttons %}
+  {{ include.slot_buttons }}
+  {% endif %}
+</div>
