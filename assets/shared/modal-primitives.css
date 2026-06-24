@@ -109,3 +109,10 @@ body.dark .shared-icon-btn,
   width: 14px;
   height: 14px;
 }
+
+.icon-trash,
+.icon-trash svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}

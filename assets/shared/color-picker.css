@@ -224,3 +224,53 @@
 .palette-chip:hover {
   transform: scale(1.15);
 }
+
+/* Opacity row */
+.custom-opacity-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.custom-opacity-range {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 14px;
+  border: 1px solid var(--clr-border);
+  border-radius: 999px;
+  background:
+    linear-gradient(to right, transparent, var(--opacity-swatch, #000000)),
+    repeating-conic-gradient(#aaa 0% 25%, #ddd 0% 50%) 0 0 / 12px 12px;
+  cursor: pointer;
+}
+
+.custom-opacity-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: var(--clr-primary, #58a6ff);
+  box-shadow: var(--shadow-thumb-ring, 0 0 0 1px rgba(0,0,0,.4));
+  cursor: pointer;
+}
+
+.custom-opacity-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: var(--clr-primary, #58a6ff);
+  box-shadow: var(--shadow-thumb-ring, 0 0 0 1px rgba(0,0,0,.4));
+  cursor: pointer;
+}
+
+.custom-opacity-val {
+  font-size: var(--txt-sm, 11px);
+  color: var(--txt-muted, var(--clr-muted));
+  min-width: 2.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

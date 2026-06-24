@@ -56,22 +56,27 @@
   // ── Internal state ───────────────────────────────────────────────────────────
 
   var _hsv = { h: 0, s: 0, v: 100 };
-  var _onChange = null;
+  var _onChange   = null;
+  var _withOpacity = false;
+  var _opacity    = 100;
   var _bound = false;
   var _d = null;
 
   function _dom() {
     if (_d) return _d;
     _d = {
-      dialog:  document.getElementById('shared-color-picker-dialog'),
-      sv:      document.getElementById('shared-cp-sv'),
-      svThumb: document.getElementById('shared-cp-sv-thumb'),
-      hue:     document.getElementById('shared-cp-hue'),
-      r:       document.getElementById('shared-cp-r'),
-      g:       document.getElementById('shared-cp-g'),
-      b:       document.getElementById('shared-cp-b'),
-      hex:     document.getElementById('shared-cp-hex'),
-      close:   document.getElementById('shared-cp-close')
+      dialog:      document.getElementById('shared-color-picker-dialog'),
+      sv:          document.getElementById('shared-cp-sv'),
+      svThumb:     document.getElementById('shared-cp-sv-thumb'),
+      hue:         document.getElementById('shared-cp-hue'),
+      r:           document.getElementById('shared-cp-r'),
+      g:           document.getElementById('shared-cp-g'),
+      b:           document.getElementById('shared-cp-b'),
+      hex:         document.getElementById('shared-cp-hex'),
+      close:       document.getElementById('shared-cp-close'),
+      opacityWrap: document.getElementById('shared-cp-opacity-wrap'),
+      opacity:     document.getElementById('shared-cp-opacity'),
+      opacityVal:  document.getElementById('shared-cp-opacity-val')
     };
     return _d;
   }
@@ -91,13 +96,18 @@
     if (document.activeElement !== d.b) d.b.value = String(rgb[2]);
     var hex = rgbToHex(rgb[0], rgb[1], rgb[2]);
     if (document.activeElement !== d.hex) d.hex.value = hex;
+    // Update opacity slider gradient to reflect current color
+    if (d.opacity && document.activeElement !== d.opacity) d.opacity.value = String(_opacity);
+    if (d.opacityVal) d.opacityVal.textContent = _opacity + '%';
+    if (d.opacity) d.opacity.style.setProperty('--opacity-swatch', hex);
   }
 
   function _emit() {
     _syncUI();
     if (_onChange) {
       var rgb = hsvToRgb(_hsv.h, _hsv.s, _hsv.v);
-      _onChange(rgbToHex(rgb[0], rgb[1], rgb[2]));
+      var hex = rgbToHex(rgb[0], rgb[1], rgb[2]);
+      if (_withOpacity) { _onChange(hex, _opacity); } else { _onChange(hex); }
     }
   }
 
@@ -168,18 +178,30 @@
         _emit();
       });
     });
+
+    d.opacity && d.opacity.addEventListener('input', function () {
+      _opacity = Math.max(0, Math.min(100, Math.round(Number(this.value) || 0)));
+      if (d.opacityVal) d.opacityVal.textContent = _opacity + '%';
+      _emit();
+    });
   }
 
   // ── Public API ───────────────────────────────────────────────────────────────
 
   window.SharedColorPicker = {
-    open: function (initialHex, onChange) {
+    // open(initialHex, onChange)
+    // open(initialHex, onChange, { opacity: 0-100 })
+    // onChange(hex) or onChange(hex, opacity) when options.opacity passed
+    open: function (initialHex, onChange, options) {
       var d = _dom();
       if (!d.dialog) return;
-      _onChange = onChange || null;
+      _onChange     = onChange || null;
+      _withOpacity  = !!(options && options.opacity !== undefined);
+      _opacity      = _withOpacity ? Math.max(0, Math.min(100, Math.round(+options.opacity || 0))) : 100;
       var rgb = hexToRgb(initialHex || '#FF0000');
       _hsv = rgbToHsv(rgb[0], rgb[1], rgb[2]);
       _bind();
+      if (d.opacityWrap) d.opacityWrap.classList.toggle('hidden', !_withOpacity);
       _syncUI();
       if (!d.dialog.open) d.dialog.showModal();
     },

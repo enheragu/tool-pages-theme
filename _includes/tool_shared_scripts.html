@@ -43,6 +43,7 @@
     {% assign resolved_current_path = resolved_current_path | append: '/' %}
   {% endif %}
   {% assign resolved_tool_name = include.tool_name | default: page.tool_name | default: 'Stat Tools' %}
+  {% if site.github_repo %}window.StatToolsPageConfig = { issueRepo: '{{ site.github_repo }}' };{% endif %}
   window.StatToolsNavPageConfig = {
     currentPath: '{{ resolved_current_path }}',
     {% if include.show_back_button != nil %}
@@ -57,7 +58,7 @@
   };
 </script>
 <script src="{{ tools_base }}/assets/tools-nav-config.js" onerror="this.onerror=null;this.src='https://enheragu.github.io{{ tools_base }}/assets/tools-nav-config.js';"></script>
-<script src="{{ tools_base }}/assets/stat-tools-page-utils.js" onerror="this.onerror=null;this.src='https://enheragu.github.io{{ tools_base }}/assets/stat-tools-page-utils.js';"></script>
+<script src="{{ shared_base }}/stat-tools-page-utils.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/stat-tools-page-utils.js';"></script>
 <script src="{{ shared_base }}/tools-nav.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/tools-nav.js';"></script>
 {% endif %}
 {% if page.with_heic_loader %}
