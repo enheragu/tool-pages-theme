@@ -247,3 +247,51 @@
   border: none;
   height: 6px;
 }
+
+
+/* ── Switch / toggle ──────────────────────────────────────────────────────
+   Pill switch wrapping a visually-hidden checkbox: the track turns primary
+   when checked and the knob slides. For on/off options (equalization, log
+   scale, …). Position it with your own modifier class on the label. */
+.shared-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--txt-sm);
+  color: var(--clr-muted);
+}
+.shared-switch__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.shared-switch__track {
+  display: inline-block;
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: var(--clr-border);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.18s;
+}
+.shared-switch__track::after {
+  content: '';
+  position: absolute;
+  top: 0.18rem;
+  left: 0.18rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: var(--clr-on-primary);
+  transition: transform 0.18s;
+}
+.shared-switch__input:checked ~ .shared-switch__track {
+  background: var(--clr-primary);
+}
+.shared-switch__input:checked ~ .shared-switch__track::after {
+  transform: translateX(1rem);
+}

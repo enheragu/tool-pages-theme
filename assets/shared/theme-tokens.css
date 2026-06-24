@@ -26,6 +26,7 @@
   --clr-bg: #f4f6f9;
   --clr-surface: #ffffff;
   --clr-border: #dde1e7;
+  --clr-panel: color-mix(in oklab, var(--clr-surface) 90%, var(--clr-border));  /* raised panel surface */
   --clr-text: #3a4658;
   --clr-muted: var(--pal-gray);
   --clr-primary: var(--pal-blue);
@@ -67,6 +68,7 @@
   --clr-checkbox-hover: #f1f5f9;
   --clr-status-error: color-mix(in oklab, var(--clr-danger) var(--mix-status-error-danger-light), var(--clr-text));
   --clr-status-success: color-mix(in oklab, var(--clr-data-green) var(--mix-status-success-green-light), var(--clr-text));
+  --clr-status-warning: color-mix(in oklab, var(--clr-data-amber) 80%, var(--clr-text));
   --clr-alert-bg: color-mix(in oklab, var(--clr-danger) var(--mix-alert-bg-danger), var(--clr-surface));
   --clr-alert-border: color-mix(in oklab, var(--clr-danger) var(--mix-alert-border-danger), var(--clr-border));
   --clr-tooltip-bg: #0f172a;
@@ -128,6 +130,7 @@ html.dark body {
   --clr-checkbox-hover: #17233a;
   --clr-status-error: color-mix(in oklab, var(--clr-danger) var(--mix-status-error-danger-dark), white);
   --clr-status-success: color-mix(in oklab, var(--clr-data-green) var(--mix-status-success-green-dark), white);
+  --clr-status-warning: color-mix(in oklab, var(--clr-data-amber) 66%, white);
   --clr-alert-bg: #3b1515;
   --clr-alert-border: color-mix(in oklab, var(--clr-danger) var(--mix-alert-border-danger), var(--clr-border));
   --clr-chart-bg: #1b2129;
@@ -153,6 +156,7 @@ html.dark body {
   --clr-checkbox-hover: #f1f5f9;
   --clr-status-error: color-mix(in oklab, var(--clr-danger) var(--mix-status-error-danger-light), var(--clr-text));
   --clr-status-success: color-mix(in oklab, var(--clr-data-green) var(--mix-status-success-green-light), var(--clr-text));
+  --clr-status-warning: color-mix(in oklab, var(--clr-data-amber) 80%, var(--clr-text));
   --clr-alert-bg: color-mix(in oklab, var(--clr-danger) var(--mix-alert-bg-danger), var(--clr-surface));
   --clr-alert-border: color-mix(in oklab, var(--clr-danger) var(--mix-alert-border-danger), var(--clr-border));
   --clr-chart-bg: #ffffff;
