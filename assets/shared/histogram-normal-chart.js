@@ -200,7 +200,7 @@
     return a + (b - a) * rest;
   }
 
-  function suggestRange(series, sigmaExtent, paddingFraction) {
+  function suggestRange(series, sigmaExtent, paddingFraction, rangeMode) {
     var valuesMin = Infinity;
     var valuesMax = -Infinity;
     var fitMin = Infinity;
@@ -224,8 +224,17 @@
       }
     });
 
-    var min = Math.min(valuesMin, fitMin);
-    var max = Math.max(valuesMax, fitMax);
+    var min, max;
+    if (rangeMode === 'sigma' && Number.isFinite(fitMin) && Number.isFinite(fitMax)) {
+      // Robust range: the ±Nσ window clamped to the data extent. Outliers beyond
+      // Nσ are clipped so the bulk of the distributions stays readable, without
+      // showing empty axis. Opt-in (rangeMode:'sigma'); default keeps full extent.
+      min = Math.max(fitMin, valuesMin);
+      max = Math.min(fitMax, valuesMax);
+    } else {
+      min = Math.min(valuesMin, fitMin);
+      max = Math.max(valuesMax, fitMax);
+    }
 
     if (!Number.isFinite(min) || !Number.isFinite(max)) {
       min = valuesMin;
@@ -491,6 +500,7 @@
     var series = Array.isArray(config.series) ? config.series : [];
     var sigmaExtent = Number.isFinite(Number(config.sigmaExtent)) ? Number(config.sigmaExtent) : 3.5;
     var rangePaddingFraction = Number.isFinite(Number(config.rangePaddingFraction)) ? Number(config.rangePaddingFraction) : 0.03;
+    var rangeMode = config.rangeMode === 'sigma' ? 'sigma' : 'data';
     var minStdBinWidthFactor = Number.isFinite(Number(config.minStdBinWidthFactor))
       ? Number(config.minStdBinWidthFactor)
       : 0.22;
@@ -508,7 +518,7 @@
     });
     if (!allValues.length) return null;
 
-    var range = suggestRange(series, sigmaExtent, rangePaddingFraction);
+    var range = suggestRange(series, sigmaExtent, rangePaddingFraction, rangeMode);
     var min = range.min;
     var max = range.max;
 
@@ -611,6 +621,7 @@
       series: series,
       sigmaExtent: cfg.sigmaExtent,
       rangePaddingFraction: cfg.rangePaddingFraction,
+      rangeMode: cfg.rangeMode,
       minStdBinWidthFactor: cfg.minStdBinWidthFactor,
       normalLineTension: cfg.normalLineTension,
       normalLinePoints: cfg.normalLinePoints,

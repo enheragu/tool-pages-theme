@@ -31,6 +31,9 @@
 {% if page.with_chart_legend %}
 <script src="{{ shared_base }}/chart-legend.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/chart-legend.js';"></script>
 {% endif %}
+{% if page.with_pyodide_runtime %}
+<script src="{{ shared_base | remove: '/shared' }}/js/core/pyodide-runtime.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/js/core/pyodide-runtime.js';"></script>
+{% endif %}
 {% if page.with_publication_ui %}
 <script src="{{ shared_base }}/publication-ui.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/publication-ui.js';"></script>
 {% endif %}
