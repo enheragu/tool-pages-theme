@@ -2,11 +2,24 @@
 {% assign measurement_id = include.measurement_id | default: '' %}
 
 {% if analytics_enabled and measurement_id != '' %}
+  {% assign shared_assets_base = site.shared_assets_base | default: '/assets/shared' %}
   <script async src="https://www.googletagmanager.com/gtag/js?id={{ measurement_id }}"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    // Consent Mode: cookies denied until the visitor accepts via the shared
+    // consent banner (ePrivacy/AEPD). Cookieless pings only by default.
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied'
+    });
     gtag('js', new Date());
     gtag('config', '{{ measurement_id }}');
+  </script>
+  <script src="{{ shared_assets_base }}/consent-banner.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/tool-pages-theme/assets/shared/consent-banner.js';"></script>
+  <script>
+    if (window.SharedConsentBanner) { window.SharedConsentBanner.init(); }
   </script>
 {% endif %}
