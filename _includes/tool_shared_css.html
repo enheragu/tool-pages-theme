@@ -5,6 +5,12 @@
 <link rel="stylesheet" href="{{ shared_base }}/publication-ui.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/publication-ui.css';">
 <link rel="stylesheet" href="{{ shared_base }}/form-controls.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/form-controls.css';">
 <link rel="stylesheet" href="{{ shared_base }}/controls.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/controls.css';">
+{% if page.with_landing_shell %}
+<link rel="stylesheet" href="{{ shared_base }}/landing-shell.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/landing-shell.css';">
+{% endif %}
+{% if page.with_about_page %}
+<link rel="stylesheet" href="{{ shared_base }}/about-page.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/about-page.css';">
+{% endif %}
 {% if page.with_lightbox_stage %}
 <link rel="stylesheet" href="{{ shared_base }}/lightbox-stage.css" onerror="this.onerror=null;this.href='https://enheragu.github.io/assets/shared/lightbox-stage.css';">
 {% endif %}

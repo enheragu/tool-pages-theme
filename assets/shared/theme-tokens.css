@@ -140,6 +140,11 @@ html.dark body {
 
 /* Explicit light mode wins over class-based dark mode. */
 :root[data-theme='light'] {
+  /* Brand palette, light-luminance variants: same hues, darkened so accents
+     keep WCAG AA on white (#58a6ff measures 2.5:1 there; #0969da is 5.2:1).
+     Only the interaction colors need it — data colors keep their tone. */
+  --pal-blue: #0969da;
+  --pal-purple: #8250df;
   --clr-bg: #f4f6f9;
   --clr-surface: #ffffff;
   --clr-border: #dde1e7;

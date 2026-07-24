@@ -56,6 +56,16 @@
     return null;
   }
 
+  function getStaleRepoInfo(repo) {
+    // Expired cache entry, ignoring TTL — used only when the network fetch
+    // fails (e.g. GitHub API rate limit): stale data beats an error card.
+    var mem = window.__repoCardCache[repo];
+    if (mem && mem.data) return mem.data;
+    var store = readMetaStore();
+    var persisted = store[repo];
+    return (persisted && persisted.data) || null;
+  }
+
   function setCachedRepoInfo(repo, info) {
     if (!repo || !info) return;
     var cacheItem = { ts: Date.now(), data: info };
@@ -85,7 +95,7 @@
         return info;
       })
       .catch(function () {
-        return null;
+        return getStaleRepoInfo(repo);
       })
       .finally(function () {
         delete inflight[repo];

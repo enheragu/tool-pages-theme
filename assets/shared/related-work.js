@@ -1,8 +1,11 @@
 (function () {
   if (window.SharedRelatedWork) return;
 
-  var DEFAULT_SOURCE = '/assets/shared/related-work.json';
-  var LOCAL_JEKYLL_SOURCE = 'http://127.0.0.1:4000/assets/shared/related-work.json';
+  // Base for shared assets: injected by tool_shared_scripts.html
+  // (window.SharedAssetsBase) so dev serves resolve locally; '/assets/shared'
+  // matches production. CDN fallbacks below stay as the resilience net.
+  var SHARED_BASE = String(window.SharedAssetsBase || '/assets/shared').replace(/\/$/, '');
+  var DEFAULT_SOURCE = SHARED_BASE + '/related-work.json';
   var FALLBACK_SOURCE = 'https://enheragu.github.io/tool-pages-theme/assets/shared/related-work.json';
   var DEFAULT_PUBLICATIONS_SOURCE = 'https://raw.githubusercontent.com/enheragu/enheragu.github.io/master/_data/publications.yml';
   var LOCAL_PUBLICATIONS_SOURCE = '/publications-data.json';
@@ -39,7 +42,7 @@
       }
 
       var script = document.createElement('script');
-      script.src = '/assets/shared/repo-cards.js';
+      script.src = SHARED_BASE + '/repo-cards.js';
       script.setAttribute('data-shared-repo-cards', '1');
       script.onload = function () { resolve(window.SharedRepoCards || null); };
       script.onerror = function () {
@@ -101,8 +104,8 @@
 
     var isLocalHost = /^(127\.0\.0\.1|localhost)$/.test(window.location.hostname || '');
     var notJekyllPort = String(window.location.port || '') !== '4000';
-    if (isLocalHost && notJekyllPort && primary !== LOCAL_JEKYLL_SOURCE) {
-      sources.push(LOCAL_JEKYLL_SOURCE);
+    if (isLocalHost && notJekyllPort && primary !== DEFAULT_SOURCE) {
+      sources.push(DEFAULT_SOURCE);
     }
 
     if (!isLocalHost && primary !== FALLBACK_SOURCE) {

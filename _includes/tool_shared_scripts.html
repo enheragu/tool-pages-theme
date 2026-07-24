@@ -1,4 +1,5 @@
 {% assign shared_base = site.shared_assets_base | default: '/assets/shared' %}
+<script>window.SharedAssetsBase = '{{ shared_base }}';</script>
 {% assign tools_base = site.tools_base | default: site.baseurl | default: '' %}
 <script src="{{ shared_base }}/ui-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/ui-core.js';"></script>
 <script src="{{ shared_base }}/i18n-core.js" onerror="this.onerror=null;this.src='https://enheragu.github.io/assets/shared/i18n-core.js';"></script>

@@ -49,8 +49,8 @@
       container: root,
       toolId: rw.toolId,
       lang: options.lang,
-      sourceUrl: rw.sourceUrl || '/stat-tools/assets/related-work.json',
-      publicationsSourceUrl: rw.publicationsSourceUrl || '/stat-tools/assets/publications-data.json',
+      sourceUrl: rw.sourceUrl || 'assets/related-work.json',
+      publicationsSourceUrl: rw.publicationsSourceUrl || 'assets/publications-data.json',
     });
   }
 
